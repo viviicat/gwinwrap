@@ -99,6 +99,8 @@ class gwinwrap:
 		self.Preview = self.main.get_widget("Preview")
 		self.socket = gtk.Socket()
 		self.Preview.add(self.socket)
+ 		self.black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
+		self.socket.modify_bg(gtk.STATE_NORMAL,self.black)
 		
 		self.previewShow = subprocess.Popen(["nice","-n","15","/usr/lib/xscreensaver/%s"%self.selectedRowValue,"-window-id","%i"%self.socket.window.xid])
 		self.socket.show()
