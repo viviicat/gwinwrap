@@ -18,7 +18,7 @@
 # Author: Gavin Langdon (fusioncast@gmail.com)
 # Copyright (C) 2008 Gavin Langdon
 
-import sys, subprocess, os
+import sys, subprocess, os, string
 try:
  	import pygtk
   	pygtk.require("2.0")
@@ -41,23 +41,30 @@ class gwinwrap:
 
 		self.FirstTime = True
 		self.useOld = False
+
+		self.nice = ["nice","-n","15"]
 			
 		#Create our dictionary and connect it
 		dic = {"on_mainWindow_destroy" : self.Quit
-			, "on_EditEffect_clicked" : self.EditEffect
-			, "on_NewEffect_clicked" : self.NewEffect 
 			, "on_Close_clicked" : self.Quit 
 			, "on_Apply_clicked" : self.ApplyEffect 
 			, "on_Refresh_clicked" : self.Refresh
-			, "on_EffectCombo_changed" : self.ChangeTreeSort
-			, "on_EffectList_cursor_changed" : self.ShowPreview
+			, "on_EffectList_cursor_changed" : self.ListItemChange
 			, "on_Stop_clicked" : self.Stop
+			, "on_speed_value_changed" : self.SpeedChange
+			, "on_SpeedCheckBox_toggled" : self.ShowPreview
 		}		
 		self.main.signal_autoconnect(dic)
+
+		self.SpeedCheckBox = self.main.get_widget("SpeedCheckBox")
+		self.speed = self.main.get_widget("speed")
 		self.Opacity = self.main.get_widget("Opacity")
 		self.Stop = self.main.get_widget("Stop")
 		self.Apply = self.main.get_widget("Apply")
 		self.Refresh = self.main.get_widget("Refresh")
+
+		self.speedHBox = self.main.get_widget("speedHBox")
+		self.SSSettingsHBox = self.main.get_widget("SSSettingsHBox")
 
 		if self.xwinwrap_running():
 			self.Stop.show()
@@ -90,19 +97,44 @@ class gwinwrap:
 			self.socket.destroy()
 			subprocess.Popen(["kill","%s" %self.previewShow.pid])
 
+	def ListItemChange(self, widget):
+		self.UsingSpeed = self.UsingSpeedCheck()
+		self.ShowPreview(widget)
 
-	def ShowPreview(self,widget):
+
+	def ShowPreview(self, widget):
 		self.CleanUpPreview()
-		selectedRow, locInRow = self.EffectList.get_selection().get_selected()
-		self.selectedRowValue = selectedRow.get_value(locInRow,0)
+		self.SSSettingsHBox.set_sensitive(True)
 
 		self.Preview = self.main.get_widget("Preview")
 		self.socket = gtk.Socket()
 		self.Preview.add(self.socket)
  		self.black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
 		self.socket.modify_bg(gtk.STATE_NORMAL,self.black)
+
+		self.sscommand = ["/usr/lib/xscreensaver/%s"%self.selectedRowValue]
+
+		if self.UsingSpeed:
+			self.speedHBox.set_sensitive(True)
+			if self.SpeedCheckBox.get_active():
+				speedvalue = self.speed.get_value()
+				if speedvalue >= 5.0:
+					speed = speedvalue - 5
+					fpsArg = ""
+					fps = 120
+				else: 
+					speed = 1
+					fps = speedvalue + 10
+					fpsArg = "--maxfps"
+				speedList = [fpsArg,"%i"%fps,"--speed","%i"%speed]
+				self.sscommand = self.sscommand + speedList
+		else: self.speedHBox.set_sensitive(False)
+
+		previewcommand = self.sscommand + ["-window-id","%i"%self.socket.window.xid]
 		
-		self.previewShow = subprocess.Popen(["nice","-n","15","/usr/lib/xscreensaver/%s"%self.selectedRowValue,"-window-id","%i"%self.socket.window.xid])
+		previewcommand = self.nice + previewcommand
+
+		self.previewShow = subprocess.Popen(previewcommand)
 		self.socket.show()
 		self.FirstTime = False
 
@@ -110,33 +142,7 @@ class gwinwrap:
 		self.Apply.show()
 		self.Apply.set_sensitive(True)
 
-
-	def NewEffect(self,widget):
-		self.CustomEffect(True)
-		if (self.result == gtk.RESPONSE_OK):
-			self.liststore.append([self.Name])
-		#	self.effectList.append(newEffect.getList())
-
-	def EditEffect(self,widget):
-		self.CustomEffect(False)
-		if (self.result == gtk.RESPONSE_OK):
-			print self.Name
-		#	self.effectList.append(newEffect.getList())
-
-	def CustomEffect(self, widget, new=False):
-		print "The effect dialog opens"
-		#get effects window from gladefile
-		self.editeffect = gtk.glade.XML(self.gladefile, "editeffect")
-		#get actual window widget from gladexml		
-		self.editwindow = self.editeffect.get_widget("editeffect")
-		self.NameBox = self.editeffect.get_widget("NameBox")
-		#self.editwindow.show()
-		self.result = self.editwindow.run()
-		self.Name = self.NameBox.get_text()
-		self.editwindow.destroy()
-		return self.result
-
-	def Refresh(self,widget):
+	def Refresh(self, widget):
 		self.useOld = True
 		self.ApplyEffect(widget)
 
@@ -152,12 +158,12 @@ class gwinwrap:
 				#convert the xscreensaver arguments to items in a list
 				xscreensaverArgs = " " + xscreensaverArgs + " "
 				xscreensaverArgs = xscreensaverArgs[1:-1].split()
-				command = ["xwinwrap","-ni","-argb","-fs","-s","-st","-sp","-b","-nf","-o","%f" %opacity,"--","/usr/lib/xscreensaver/%s"%self.selectedRowValue,"-window-id","WID"]
+				command = ["xwinwrap","-ni","-argb","-fs","-s","-st","-sp","-b","-nf","-o","%f" %opacity,"--"]
 				
 				self.CPUPriority = self.main.get_widget("CPUPriority")
 				if gtk.CheckButton.get_active(self.CPUPriority):
-					nice = ["nice","-n" "15"]
-				self.command = nice + command + xscreensaverArgs
+					self.command = self.nice + command
+				self.command = self.command + self.sscommand + xscreensaverArgs + ["-window-id","WID"]
 				self.Apply.hide()
 				self.Stop.show()
 				self.Refresh.set_sensitive(True)
@@ -175,7 +181,7 @@ class gwinwrap:
 		print "Bye bye"
 		gtk.main_quit()
 
-	def Stop(self,widget):
+	def Stop(self, widget):
 		self.KillXwinwrap()
 		self.Stop.hide()
 		self.Apply.show()
@@ -193,6 +199,18 @@ class gwinwrap:
 		EffectCombo = self.main.get_widget("EffectCombo")
 		listname = gtk.ComboBox.get_active_text(EffectCombo)
 		print "Now showing the list of %s" %listname
+
+	def SpeedChange(self, widget):
+		if not self.SpeedCheckBox.get_active():
+			self.SpeedCheckBox.set_active(True)
+		self.ShowPreview(widget)
+
+	def UsingSpeedCheck(self):
+		selectedRow, locInRow = self.EffectList.get_selection().get_selected()
+		self.selectedRowValue = selectedRow.get_value(locInRow,0)
+		if string.find(subprocess.Popen(["/usr/lib/xscreensaver/%s" %self.selectedRowValue,"--help"], stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0],"--speed") >= 0:
+			return True
+		else: return False
 
 		
 if __name__ == "__main__":
