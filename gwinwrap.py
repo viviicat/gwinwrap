@@ -199,8 +199,8 @@ class gwinwrap:
 				speed = 1
 				fps = speedvalue + 10
 				fpsArg = " --maxfps "
-				speedStr = "%s%i "%(fpsArg,fps)
-			speedStr = speedStr + "--speed %i" %speed
+				speedStr = "%s%i"%(fpsArg,fps)
+			speedStr = speedStr + " --speed %i" %speed
 			self.sscommand = self.sscommand + speedStr
 
 	def SetUpTreeView(self):
@@ -234,13 +234,13 @@ class gwinwrap:
 			self.CPUPriority = self.main.get_widget("CPUPriority")
 			if gtk.CheckButton.get_active(self.CPUPriority):
 				baseCommand = self.nice + baseCommand
-			command = baseCommand + self.sscommand + xscreensaverArgs + "-window-id WID"
+			command = baseCommand + self.sscommand + xscreensaverArgs + " -window-id WID"
 
 			return command
 
 		elif mode == "xscreensaver":
 
-			self.sscommand = "%s%s "%(self.XSSDir,self.selectedRowValue)
+			self.sscommand = "%s%s"%(self.XSSDir,self.selectedRowValue)
 	
 			if self.UsingSpeed:
 				self.speedHBox.set_sensitive(True)
