@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Aug  6 02:51:31 2008 -->
+<!--Generated with glade3 3.4.5 on Wed Aug  6 03:11:17 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="main">
     <property name="width_request">800</property>
@@ -119,7 +119,7 @@
                           <widget class="GtkImage" id="image2">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
-                            <property name="stock">gtk-go-down</property>
+                            <property name="stock">gtk-preferences</property>
                             <property name="icon_size">5</property>
                           </widget>
                           <packing>
@@ -131,7 +131,7 @@
                           <widget class="GtkLabel" id="label3">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Choose effect options&lt;/big&gt;&lt;/b&gt;</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Set effect options&lt;/big&gt;&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
                           <packing>
@@ -162,7 +162,7 @@
                           <widget class="GtkLabel" id="label4">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Apply the effect&lt;/big&gt;&lt;/b&gt;</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Run the effect&lt;/big&gt;&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
                           <packing>
