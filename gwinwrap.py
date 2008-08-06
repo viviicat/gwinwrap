@@ -37,17 +37,19 @@ class gwinwrap:
 			
 		#Set the Glade file
 		self.gladefile = "gwinwrap.glade"
-		self.main = gtk.glade.XML(self.gladefile) 
+		self.main = gtk.glade.XML(self.gladefile)
 
-		self.FirstTime = True
-		self.useOld = False
+		self.XSSDir = "/usr/lib/xscreensaver/" 
+
+		self.PreviewShowing = False
+		self.selectedRowValue = ""
 
 		self.nice = ["nice","-n","15"]
 			
 		#Create our dictionary and connect it
 		dic = {"on_mainWindow_destroy" : self.Quit
 			, "on_Close_clicked" : self.Quit 
-			, "on_Apply_clicked" : self.ApplyEffect 
+			, "on_Apply_clicked" : self.Apply
 			, "on_Refresh_clicked" : self.Refresh
 			, "on_EffectList_cursor_changed" : self.ListItemChange
 			, "on_Stop_clicked" : self.Stop
@@ -67,67 +69,79 @@ class gwinwrap:
 		self.SSSettingsHBox = self.main.get_widget("SSSettingsHBox")
 
 		if self.xwinwrap_running():
-			self.Stop.show()
+			self.Stop.set_sensitive(True)
 
 		else: self.Apply.show()	
 
-		#Get the treeView from the widget Tree
+		self.SetUpTreeView()
+
+	def SetUpTreeView(self):
 		self.EffectList = self.main.get_widget("EffectList")
 		self.EffectList.insert_column_with_attributes(-1,"Effect",gtk.CellRendererText(),text=0)
-	
-		#Create the listStore Model
+
 		self.liststore = gtk.ListStore(str)
 
 		self.GetScreenSavers()
-
-		#Attach the model to the treeView
 		self.EffectList.set_model(self.liststore)
 
-
-#		self.RunPreview()
-
 	def GetScreenSavers(self):
-		self.ScreenSavers = os.listdir("/usr/lib/xscreensaver")
+		self.ScreenSavers = os.listdir(self.XSSDir)
 		self.ScreenSavers.sort()
 		for item in self.ScreenSavers:
 			self.liststore.append([item])
 	
 	def CleanUpPreview(self):
-		if not self.FirstTime:
+		if self.PreviewShowing:
 			self.socket.destroy()
 			subprocess.Popen(["kill","%s" %self.previewShow.pid])
+		else:
+			self.WelcomeBox = self.main.get_widget("WelcomeBox")
+			self.Preview = self.main.get_widget("Preview")
+
+			self.WelcomeBox.destroy()
+			self.Preview.show()
 
 	def ListItemChange(self, widget):
-		self.UsingSpeed = self.UsingSpeedCheck()
-		self.ShowPreview(widget)
+		oldrow = self.selectedRowValue
+		selectedRow, locInRow = self.EffectList.get_selection().get_selected()
+		self.selectedRowValue = selectedRow.get_value(locInRow,0)
+		if oldrow != self.selectedRowValue:
+			self.UsingSpeed = self.UsingSpeedCheck()
+			self.ShowPreview(widget)
 
-
-	def ShowPreview(self, widget):
-		self.CleanUpPreview()
-		self.SSSettingsHBox.set_sensitive(True)
-
+	def SetUpSocket(self):
 		self.Preview = self.main.get_widget("Preview")
 		self.socket = gtk.Socket()
 		self.Preview.add(self.socket)
  		self.black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
 		self.socket.modify_bg(gtk.STATE_NORMAL,self.black)
 
-		self.sscommand = ["/usr/lib/xscreensaver/%s"%self.selectedRowValue]
+	def SetUpSpeedList(self):
+		if self.SpeedCheckBox.get_active():
+			speedvalue = self.speed.get_value()
+			if speedvalue >= 5.0:
+				speed = speedvalue - 5
+				fpsArg = ""
+				fps = 120
+			else: 
+				speed = 1
+				fps = speedvalue + 10
+				fpsArg = "--maxfps"
+			speedList = [fpsArg,"%i"%fps,"--speed","%i"%speed]
+			self.sscommand = self.sscommand + speedList
+
+
+	def ShowPreview(self, widget):
+		self.CleanUpPreview()
+		self.SetUpSocket()
+		self.SSSettingsHBox.set_sensitive(True)
+
+		self.sscommand = ["%s%s"%(self.XSSDir,self.selectedRowValue)]
 
 		if self.UsingSpeed:
 			self.speedHBox.set_sensitive(True)
-			if self.SpeedCheckBox.get_active():
-				speedvalue = self.speed.get_value()
-				if speedvalue >= 5.0:
-					speed = speedvalue - 5
-					fpsArg = ""
-					fps = 120
-				else: 
-					speed = 1
-					fps = speedvalue + 10
-					fpsArg = "--maxfps"
-				speedList = [fpsArg,"%i"%fps,"--speed","%i"%speed]
-				self.sscommand = self.sscommand + speedList
+			self.SetUpSpeedList()
+
 		else: self.speedHBox.set_sensitive(False)
 
 		previewcommand = self.sscommand + ["-window-id","%i"%self.socket.window.xid]
@@ -135,56 +149,51 @@ class gwinwrap:
 		previewcommand = self.nice + previewcommand
 
 		self.previewShow = subprocess.Popen(previewcommand)
+		self.PreviewShowing = True
 		self.socket.show()
-		self.FirstTime = False
 
-		self.Stop.hide()
 		self.Apply.show()
 		self.Apply.set_sensitive(True)
 
 	def Refresh(self, widget):
-		self.useOld = True
+		self.ApplyEffect(widget,True)
+
+	def Apply(self, widget):
 		self.ApplyEffect(widget)
 
-	def ApplyEffect(self, widget):
-		if not self.FirstTime:
-			self.KillXwinwrap()
-			if not self.useOld:
-				opacity = float(self.Opacity.get_value())			
-				opacity = opacity/100		
-				nice = []
-				self.xscreensaverArgLabel = self.main.get_widget("xscreensaverArgLabel")
-				xscreensaverArgs = self.xscreensaverArgLabel.get_text()
-				#convert the xscreensaver arguments to items in a list
-				xscreensaverArgs = " " + xscreensaverArgs + " "
-				xscreensaverArgs = xscreensaverArgs[1:-1].split()
-				command = ["xwinwrap","-ni","-argb","-fs","-s","-st","-sp","-b","-nf","-o","%f" %opacity,"--"]
-				
-				self.CPUPriority = self.main.get_widget("CPUPriority")
-				if gtk.CheckButton.get_active(self.CPUPriority):
-					self.command = self.nice + command
-				self.command = self.command + self.sscommand + xscreensaverArgs + ["-window-id","WID"]
-				self.Apply.hide()
-				self.Stop.show()
-				self.Refresh.set_sensitive(True)
-			subprocess.Popen(self.command)
-			self.useOld = False
-					
-		else: subprocess.Popen(["killall","xwinwrap"])
+	def ApplyEffect(self, widget, useOld=False):
+		self.KillXwinwrap()
+		if not useOld:
+			self.ComposeCommand()
+		subprocess.Popen(self.command)
+		self.Stop.set_sensitive(True)
 
-	def Ok(self, widget):
-		self.ApplyEffect(self)
-		self.Quit(widget)
+	def ComposeCommand(self):
+		opacity = float(self.Opacity.get_value())			
+		opacity = opacity/100		
+		nice = []
+		self.xscreensaverArgLabel = self.main.get_widget("xscreensaverArgLabel")
+		xscreensaverArgs = self.xscreensaverArgLabel.get_text()
+
+		# Convert the xscreensaver arguments to items in a list
+		xscreensaverArgs = " " + xscreensaverArgs + " "
+		xscreensaverArgs = xscreensaverArgs[1:-1].split()
+		command = ["xwinwrap","-ni","-argb","-fs","-s","-st","-sp","-b","-nf","-o","%f" %opacity,"--"]
+				
+		self.CPUPriority = self.main.get_widget("CPUPriority")
+		if gtk.CheckButton.get_active(self.CPUPriority):
+			self.command = self.nice + command
+		self.command = self.command + self.sscommand + xscreensaverArgs + ["-window-id","WID"]
+		self.Apply.set_sensitive(False)
+		self.Refresh.set_sensitive(True)
 
 	def Quit(self, widget):
 		self.CleanUpPreview()
-		print "Bye bye"
 		gtk.main_quit()
 
 	def Stop(self, widget):
 		self.KillXwinwrap()
-		self.Stop.hide()
-		self.Apply.show()
+		self.Stop.set_sensitive(False)
 
 	def KillXwinwrap(self):
 		if self.xwinwrap_running():
@@ -206,9 +215,7 @@ class gwinwrap:
 		self.ShowPreview(widget)
 
 	def UsingSpeedCheck(self):
-		selectedRow, locInRow = self.EffectList.get_selection().get_selected()
-		self.selectedRowValue = selectedRow.get_value(locInRow,0)
-		if string.find(subprocess.Popen(["/usr/lib/xscreensaver/%s" %self.selectedRowValue,"--help"], stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0],"--speed") >= 0:
+		if string.find(subprocess.Popen(["%s%s" %(self.XSSDir,self.selectedRowValue),"--help"], stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0],"--speed") >= 0:
 			return True
 		else: return False
 
