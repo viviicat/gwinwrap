@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Aug  6 03:11:17 2008 -->
+<!--Generated with glade3 3.4.5 on Thu Aug  7 03:44:26 2008 -->
 <glade-interface>
-  <widget class="GtkWindow" id="main">
+  <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
     <property name="height_request">500</property>
-    <property name="visible">True</property>
     <property name="title" translatable="yes">Gwinwrap</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
-    <signal name="destroy" handler="on_main_destroy"/>
+    <signal name="destroy" handler="on_Main_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -29,6 +28,7 @@
                   <widget class="GtkTreeView" id="EffectList">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
                     <property name="headers_visible">False</property>
                     <property name="fixed_height_mode">True</property>
                     <signal name="cursor_changed" handler="on_EffectList_cursor_changed"/>
@@ -162,7 +162,7 @@
                           <widget class="GtkLabel" id="label4">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Run the effect&lt;/big&gt;&lt;/b&gt;</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Apply the effect&lt;/big&gt;&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
                           <packing>
@@ -225,7 +225,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="speedHBox">
+                      <widget class="GtkHBox" id="SpeedHBox">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="spacing">5</property>
@@ -243,13 +243,13 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkHScale" id="speed">
+                          <widget class="GtkHScale" id="Speed">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="update_policy">GTK_UPDATE_DELAYED</property>
                             <property name="adjustment">1 1 75 15 10 10</property>
                             <property name="draw_value">False</property>
-                            <signal name="value_changed" handler="on_speed_value_changed"/>
+                            <signal name="value_changed" handler="on_Speed_value_changed"/>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -440,22 +440,11 @@
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkLabel" id="label10">
+              <widget class="GtkImage" id="image6">
                 <property name="visible">True</property>
-                <property name="xpad">10</property>
-                <property name="label" translatable="yes">If you haven't already, please install some xscreensaver and/or gnome-screensaver packages and restart Gwinwrap to continue.
-
-Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreensaver/. If that is the case, edit the variables in gwinwrap.py accordingly.
-</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
+                <property name="stock">gtk-dialog-warning</property>
+                <property name="icon_size">6</property>
               </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkLabel" id="label9">
@@ -472,11 +461,22 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               </packing>
             </child>
             <child>
-              <widget class="GtkImage" id="image6">
+              <widget class="GtkLabel" id="label10">
                 <property name="visible">True</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon_size">6</property>
+                <property name="xpad">10</property>
+                <property name="label" translatable="yes">If you haven't already, please install some xscreensaver and/or gnome-screensaver packages and restart Gwinwrap to continue.
+
+Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreensaver/. If that is the case, edit the variables in gwinwrap.py accordingly.
+</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -525,21 +525,12 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkLabel" id="label8">
+              <widget class="GtkImage" id="image5">
                 <property name="visible">True</property>
-                <property name="xpad">10</property>
-                <property name="label" translatable="yes">How could you expect to run it!? Please install xwinwrap to continue.
-
-&lt;b&gt;Note:&lt;/b&gt; Xwinwrap is not included in the Hardy Heron repositories. Ubuntu users may try searching GetDeb.net for a package.</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
+                <property name="yalign">0.25</property>
+                <property name="stock">gtk-dialog-warning</property>
+                <property name="icon_size">6</property>
               </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkLabel" id="label7">
@@ -557,12 +548,21 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               </packing>
             </child>
             <child>
-              <widget class="GtkImage" id="image5">
+              <widget class="GtkLabel" id="label8">
                 <property name="visible">True</property>
-                <property name="yalign">0.25</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon_size">6</property>
+                <property name="xpad">10</property>
+                <property name="label" translatable="yes">How could you expect to run it!? Please install xwinwrap to continue.
+
+&lt;b&gt;Note:&lt;/b&gt; Xwinwrap is not included in the Hardy Heron repositories. Ubuntu users may try searching GetDeb.net for a package.</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
           </widget>
           <packing>

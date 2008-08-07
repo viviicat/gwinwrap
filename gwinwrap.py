@@ -30,10 +30,12 @@ try:
 except:
 	sys.exit(1)
 
+from optparse import OptionParser
+
 class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
-	print "\n == GWINWRAP VERSION 0.1-SVN -- Have fun with your animated desktop! ==\n"
+	print "\n== GWINWRAP VERSION 0.1-SVN -- Have fun with your animated desktop! =="
 	def __init__(self):
 		
 		### ADJUSTABLE VARIABLES -- It won't hurt to edit these a bit
@@ -41,18 +43,18 @@ class gwinwrap:
 		self.XSSDir = "/usr/lib/xscreensaver/" 
 		# The nice command
 		self.nice = "nice -n 15 "
-		### END AJUSTABLE VARIABLES ################################
+		### END AJUSTABLE VARIABLES ###
 
 		# Set the Glade file
 		self.gladefile = "gwinwrap.glade"
-		self.main = gtk.glade.XML(self.gladefile)
+		self.gladeXML = gtk.glade.XML(self.gladefile)
 
 		# Initialize some program variables
 		self.PreviewShowing = False
-		self.selectedRowValue = ""
-			
+		self.selectedSaver = ""
+
 		# Create our dictionary and connect it
-		dic = {"on_mainWindow_destroy" : self.Quit
+		dic = {"on_Main_destroy" : self.Quit
 			, "on_Close_clicked" : self.Quit 
 			, "on_Apply_clicked" : self.Apply
 			, "on_Refresh_clicked" : self.Refresh
@@ -65,29 +67,56 @@ class gwinwrap:
 			, "on_XscreensaverClose_clicked" : self.Quit
 			, "on_XwinwrapClose_clicked" : self.Quit
 		}		
-		self.main.signal_autoconnect(dic)
+		self.gladeXML.signal_autoconnect(dic)
 
 		# Check for Xwinwrap
 		if not self.xwinwrap_installed():
-			self.NoXwinwrap = self.main.get_widget("NoXwinwrap")
 			self.NoXwinwrap.show()
 			print " ** You don't have Xwinwrap installed!"
 
+	#	if startOptions.args:
+			
+
 		# Get the widgets we need
-		self.SpeedCheckBox = self.main.get_widget("SpeedCheckBox")
-		self.speed = self.main.get_widget("speed")
-		self.Opacity = self.main.get_widget("Opacity")
-		self.Stop = self.main.get_widget("Stop")
-		self.Apply = self.main.get_widget("Apply")
-		self.Refresh = self.main.get_widget("Refresh")
-		self.speedHBox = self.main.get_widget("speedHBox")
-		self.SettingsHBox = self.main.get_widget("SettingsHBox")
+		self.Main = self.gladeXML.get_widget("Main")
+		self.SpeedCheckBox = self.gladeXML.get_widget("SpeedCheckBox")
+		self.Speed = self.gladeXML.get_widget("Speed")
+		self.Opacity = self.gladeXML.get_widget("Opacity")
+		self.Stop = self.gladeXML.get_widget("Stop")
+		self.Apply = self.gladeXML.get_widget("Apply")
+		self.Refresh = self.gladeXML.get_widget("Refresh")
+		self.SpeedHBox = self.gladeXML.get_widget("SpeedHBox")
+		self.SettingsHBox = self.gladeXML.get_widget("SettingsHBox")
+		self.WelcomeBox = self.gladeXML.get_widget("WelcomeBox")
+		self.Preview = self.gladeXML.get_widget("Preview")
+		self.NoXscreensavers = self.gladeXML.get_widget("NoXscreensavers")
+		self.NoXwinwrap = self.gladeXML.get_widget("NoXwinwrap")
+		self.EffectList = self.gladeXML.get_widget("EffectList")
+		self.Preview = self.gladeXML.get_widget("Preview")
+		self.xscreensaverArgLabel = self.gladeXML.get_widget("xscreensaverArgLabel")
+		self.CPUPriority = self.gladeXML.get_widget("CPUPriority")
 
 		# Enable stopping the already running xwinwrap process
 		if self.xwinwrap_running():
-			self.Stop.set_sensitive(True)	
+			self.Stop.set_sensitive(True)
+			if startOptions.options.stop:
+				self.KillXwinwrap()
+				if not startOptions.args and not startOptions.options.window:
+					quit()
+		if startOptions.options.stop == True and not startOptions.args and not startOptions.options.window:
+			print "No need to stop anything, nothing's running.\n"
+			quit()
 
 		self.SetUpTreeView()
+
+		if startOptions.args:
+			self.selectedSaver = startOptions.args[0]
+			self.command = self.ComposeCommand("all")
+			self.RunEffect()
+			if not startOptions.options.window:
+				quit()
+
+		self.Main.show()
 
 	def ShowPreview(self, widget):
 		'Shows a preview of the selected xscreensaver within a gtk.Socket'
@@ -107,6 +136,9 @@ class gwinwrap:
 		if New:
 			self.command = self.ComposeCommand()
 			self.Refresh.set_sensitive(True)
+		self.RunEffect()
+
+	def RunEffect(self):
 		self.KillXwinwrap()
 		print " * GWINWRAP ** Running: " + self.command
 		self.Run(self.command)
@@ -127,19 +159,19 @@ class gwinwrap:
 
 	def ListItemChange(self, widget):
 		'Get the new label, check if it s the same as the old, and if not change the preview and buttons accordingly. Also, check for speed now so we don t need to so frequently.'
-		oldrow = self.selectedRowValue
+		oldrow = self.selectedSaver
 		selectedRow, locInRow = self.EffectList.get_selection().get_selected()
-		self.selectedRowValue = selectedRow.get_value(locInRow,0)
-		if oldrow != self.selectedRowValue:
-			self.Apply.set_sensitive(True)
-			self.UsingSpeed = self.UsingSpeedCheck()
-			self.ShowPreview(widget)
+		if locInRow:
+			self.selectedSaver = selectedRow.get_value(locInRow,0)
+			if oldrow != self.selectedSaver:
+				self.Apply.set_sensitive(True)
+				self.UsingSpeed = self.UsingSpeedCheck()
+				self.ShowPreview(widget)
 
 	def GetScreenSavers(self):
 		'Get a list of the screensavers in the xscreensaver directory'
 		self.ScreenSavers = os.listdir(self.XSSDir)
 		if len(self.ScreenSavers) == 0:
-			self.NoXscreensavers = self.main.get_widget("NoXscreensavers")
 			self.NoXscreensavers.show()
 			print "You don't have any Xscreensavers in %s" %self.XSSDir
 		self.ScreenSavers.sort()
@@ -152,9 +184,6 @@ class gwinwrap:
 			self.socket.destroy()
 			self.Run("kill %s" %self.previewShow.pid)
 		else:
-			self.WelcomeBox = self.main.get_widget("WelcomeBox")
-			self.Preview = self.main.get_widget("Preview")
-
 			self.WelcomeBox.destroy()
 			self.Preview.show()
 
@@ -164,6 +193,7 @@ class gwinwrap:
 
 	def KillXwinwrap(self):
 		if self.xwinwrap_running():
+			print " * GWINWRAP ** Killing current xwinwrap process."
 			self.Run("killall xwinwrap")
 
 	def xwinwrap_running(self):
@@ -184,7 +214,7 @@ class gwinwrap:
 
 	def UsingSpeedCheck(self):
 		'Check the selected screensaver for a --speed option by reading its --help output'
-		if string.find(subprocess.Popen(["%s%s" %(self.XSSDir,self.selectedRowValue),"--help"], stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0],"--speed") >= 0:
+		if string.find(subprocess.Popen(["%s%s" %(self.XSSDir,self.selectedSaver),"--help"], stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0],"--speed") >= 0:
 			return True
 		else: return False
 
@@ -204,7 +234,6 @@ class gwinwrap:
 			self.sscommand = self.sscommand + speedStr
 
 	def SetUpTreeView(self):
-		self.EffectList = self.main.get_widget("EffectList")
 		self.EffectList.insert_column_with_attributes(-1,"Effect",gtk.CellRendererText(),text=0)
 
 		self.liststore = gtk.ListStore(str)
@@ -214,7 +243,6 @@ class gwinwrap:
 
 	def SetUpSocket(self):
 		'Attach the socket and color it black to avoid flashes when changing previews'
-		self.Preview = self.main.get_widget("Preview")
 		self.socket = gtk.Socket()
 		self.Preview.add(self.socket)
  		self.black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
@@ -222,37 +250,38 @@ class gwinwrap:
 
 	def ComposeCommand(self,mode="xwinwrap"):
 		'Create the command to use when launching either xwinwrap or the previews'
+		baseCommand = "xwinwrap -ni -argb -fs -s -st -sp -b -nf -o "
 		if mode == "xwinwrap":
 			opacity = float(self.Opacity.get_value())			
 			opacity = opacity/100		
 	
-			self.xscreensaverArgLabel = self.main.get_widget("xscreensaverArgLabel")
-			xscreensaverArgs = self.xscreensaverArgLabel.get_text()
-	
-			baseCommand = "xwinwrap -ni -argb -fs -s -st -sp -b -nf -o %f -- " %opacity
+			xscreensaverArgs = " " + self.xscreensaverArgLabel.get_text()
 					
-			self.CPUPriority = self.main.get_widget("CPUPriority")
 			if gtk.CheckButton.get_active(self.CPUPriority):
 				baseCommand = self.nice + baseCommand
-			command = baseCommand + self.sscommand + xscreensaverArgs + " -window-id WID"
+			command = baseCommand + "%f"%opacity + " -- " + self.sscommand + xscreensaverArgs + " -window-id WID"
 
 			return command
 
 		elif mode == "xscreensaver":
 
-			self.sscommand = "%s%s"%(self.XSSDir,self.selectedRowValue)
+			self.sscommand = "%s%s"%(self.XSSDir,self.selectedSaver)
 	
 			if self.UsingSpeed:
-				self.speedHBox.set_sensitive(True)
+				self.SpeedHBox.set_sensitive(True)
 				self.SetUpSpeedList()
 
-			else: self.speedHBox.set_sensitive(False)
+			else: self.SpeedHBox.set_sensitive(False)
 
 			command = self.sscommand + " -window-id %i"%self.socket.window.xid
 			
 			command = self.nice + command
 
 			return command
+
+		elif mode == "all":
+			return baseCommand + " 1 -- %s%s -window-id WID" %(self.XSSDir,self.selectedSaver)
+			
 
 	def Run(self,command):
 		'Change the command (in a string) into a list for subprocess, Launch quietly, and return the object for PID referencing'
@@ -268,6 +297,17 @@ class gwinwrap:
 		self.CleanUpPreview()
 		print "\nThis is Gwinwrap saying, \"Sayonara!\"\n"
 		gtk.main_quit()
+
+class startOptions:
+	"""This is a separate class which checks the startup command for options."""
+	parser = OptionParser(usage="usage: %prog SCREENSAVER [options]",description="Thanks for trying %prog, a gui for xwinwrap. If you want, you can use %prog to run a screensaver with xwinwrap and default commands by adding it after ./%prog. For example: './%prog glmatrix' will start the glmatrix screensaver. This option disables the rest of the interface.")
+
+	parser.add_option("-w", "--window", action="store_true", dest="window", default=False,
+			help="Show the interface even if running a screensaver directly.")
+	parser.add_option("-s", "--stop", action="store_true", dest="stop", default=False,
+			help="An 'off' button. Quits any xwinwrap instances, then quits itself.")
+	
+	options, args = parser.parse_args()
 
 		
 if __name__ == "__main__":
