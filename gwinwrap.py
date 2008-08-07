@@ -60,7 +60,7 @@ class gwinwrap:
 			, "on_Refresh_clicked" : self.Refresh
 			, "on_EffectList_cursor_changed" : self.ListItemChange
 			, "on_Stop_clicked" : self.Stop
-			, "on_speed_value_changed" : self.SpeedChange
+			, "on_Speed_value_changed" : self.SpeedChange
 			, "on_Opacity_value_changed" : self.OptionChange
 			, "on_CPUPriority_toggled" : self.OptionChange
 			, "on_SpeedCheckBox_toggled" : self.ShowPreview
@@ -221,7 +221,7 @@ class gwinwrap:
 	def SetUpSpeedList(self):
 		'Custom values in order to make the speed-affected screensavers slower. Roughly merges the --maxfps option with the --speed option.'
 		if self.SpeedCheckBox.get_active():
-			speedvalue = self.speed.get_value()
+			speedvalue = self.Speed.get_value()
 			speedStr = ""
 			if speedvalue >= 5.0:
 				speed = speedvalue - 5
