@@ -1,44 +1,66 @@
 (lp0
 (lp1
-S'BouncingCow'
+S'Cool Plasma'
 p2
-aS'Cool Plasma'
+aS'The Matrix'
 p3
-aS'GLMatrix'
+aS'Euphoria'
 p4
-aa(lp5
-S'Absolutely hilarious!'
+aS'Helios'
+p5
+aS'Lockward'
 p6
-aS'Plasma with a slow setting.'
-p7
-aS'Everyone loves the matrix!'
+aa(lp7
+S'Plasma with a slow setting.'
 p8
-aa(lp9
-I01
-aI01
-aI01
-aa(lp10
-F1.0
-aF4.4871794871794872
-aF1.0
-aa(lp11
-S'bouncingcow'
+aS"It's Amazing!"
+p9
+aS'Another good background'
+p10
+aS'Smooth shapes swirling around'
+p11
+aS'A nice simple background'
 p12
-aS'plasma'
-p13
-aS'glmatrix'
-p14
-aa(lp15
-F100.0
-aF35.0
-aF80.0
-aa(lp16
+aa(lp13
 I01
 aI01
 aI01
-aa(lp17
-S''
+aI01
+aI01
+aa(lp14
+F4.4871794871794872
+aI0
+aF7.1538461538461542
+aF4.8974358974358978
+aI0
+aa(lp15
+S'plasma'
+p16
+aS'matrixview'
+p17
+aS'euphoria'
 p18
-ag18
-ag18
+aS'helios'
+p19
+aS'lockward'
+p20
+aa(lp21
+F35.0
+aF100.0
+aF100.0
+aF100.0
+aF100.0
+aa(lp22
+I01
+aI01
+aI01
+aI01
+aI01
+aa(lp23
+S''
+p24
+ag24
+ag24
+ag24
+ag24
 aa.

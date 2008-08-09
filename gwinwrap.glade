@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Aug  8 04:46:13 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Aug  9 01:54:41 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
@@ -81,16 +81,16 @@
                     <child>
                       <widget class="GtkHBox" id="MovieHBox">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="spacing">5</property>
                         <child>
                           <widget class="GtkRadioButton" id="MovieRadio">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">TODO: Movie:</property>
+                            <property name="label" translatable="yes">Video:</property>
                             <property name="response_id">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_MovieRadio_toggled"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -584,12 +584,12 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="xscreensaverArgLabel">
+                          <widget class="GtkEntry" id="ArgLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">Common options include "-speed #" and "-maxfps #". Consult the man pages of the effect for more details.</property>
-                            <signal name="changed" handler="on_xscreensaverArgLabel_changed"/>
+                            <signal name="changed" handler="on_ArgLabel_changed"/>
                           </widget>
                           <packing>
                             <property name="position">1</property>
