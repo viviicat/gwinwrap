@@ -18,21 +18,6 @@
 # Author: Gavin Langdon (fusioncast@gmail.com)
 # Copyright (C) 2008 Gavin Langdon
 
-
-
-
-
-
-# FIXME'S:
-# DON'T FORGET TO ADD THE SECOND SCROLL TO CELL AND FINISH UP
-# Add warning about mplayer
-# Add stop and Play buttons for mplayer, maybe pause too?
-
-
-
-
-
-
 import sys, subprocess, os, string
 try:
  	import pygtk
@@ -64,17 +49,8 @@ class gwinwrap:
 		# The nice command
 		self.nice = "nice -n 15 "
 		# Pickle file
-		self.pickle = "effects.gwrp"
+		self.pickle = "presets.gwrp"
 		### END AJUSTABLE VARIABLES ###
-
-		self.effectList = []
-		self.descList = []
-		self.isSaverList = []
-		self.saverSpeedList = []
-		self.filepathList = []
-		self.opacityList = []
-		self.priorityList = []
-		self.argList = []
 
 		self.settingLists = self.ReadFromDisk()
 
@@ -88,6 +64,8 @@ class gwinwrap:
 		self.selectedEffect = ""
 		self.MakingNew = False
 		self.CancelPressed = False
+		self.PresetSelectionProcess = False
+		self.ScreenSavers = []
 
 		# Create our dictionary and connect it
 		dic = {"on_Main_destroy" : self.Quit
@@ -113,8 +91,8 @@ class gwinwrap:
 			, "on_EffectDescr_changed" : self.EffectSaveableCheck
 			, "on_SaveEdit_clicked" : self.SaveEdit
 			, "on_Add_clicked" : self.Add
-			, "on_MovieRadio_toggled" : self.MovieRadioToggle
-			, "on_SSRadio_toggled" : self.EffectsListSelect
+			, "on_MovieRadio_toggled" : self.MovieRadioToggled
+			, "on_SSRadio_toggled" : self.SaverRadioToggled
 		}		
 		self.gladeXML.signal_autoconnect(dic)
 
@@ -185,14 +163,16 @@ class gwinwrap:
 
 		self.Main.show()
 	
-	def MovieRadioToggle(self,widget):
-		if self.MovieChooser.get_filename() and self.MovieRadio.get_active():
+	def MovieRadioToggled(self,widget):
+		if self.MovieChooser.get_filename() and widget.get_active():
 			self.ChooseMovie(widget)
-		elif not self.MovieRadio.get_active():
-			self.CleanUpPreview()
+
+	def SaverRadioToggled(self,widget):
+		if widget.get_active():
+			self.SaverListSelect(None)
 
 	def SpeedCheckBox(self,widget):
-		if not self.SettingsHBox.get_property('sensitive'):
+		if not self.PresetSelectionProcess:
 			self.ShowPreview()
 
 	def ShowEdit(self,widget):
@@ -231,13 +211,12 @@ class gwinwrap:
 			self.EffectManager(self.OldName,mode="remove")
 		self.EffectManager(mode="add")
 		self.GetSavedEffects()
-		names = self.settingLists[0]
 		sortednames = []
-		for name in names:
+		for name in self.EffectNameList():
 			sortednames = sortednames + [name.lower()]
 		sortednames.sort()
-		tempsettings = self.TempSettings[0]
-		nameindex = sortednames.index(tempsettings.lower())
+		newname = self.TempSettings[0]
+		nameindex = sortednames.index(newname.lower())
 		self.EffectsListSelection.select_path(nameindex)
 		self.EffectsList.scroll_to_cell(nameindex,use_align=True)
 		print " * Updated settings."
@@ -285,6 +264,7 @@ class gwinwrap:
 
 	def ChooseMovie(self,widget):
 		if self.MovieChooser.get_filename():
+			self.SpeedHBox.set_sensitive(False)
 			self.MovieRadio.set_active(True)
 			self.MovieFile = self.MovieChooser.get_filename()
 			temp_moviefile = self.MovieFile
@@ -416,22 +396,26 @@ class gwinwrap:
 	def SaverListSelect(self, widget):
 		'Get the new label, check if it s the same as the old, and if not change the preview and buttons accordingly. Also, check for speed now so we don t need to so frequently.'
 		selectedRow, locInRow = self.SaverListSelection.get_selected()
-		if locInRow:
-			self.SSRadio.set_active(True)
-			if selectedRow.get_value(locInRow,0) != self.selectedSaver:
-				self.EffectSaveableCheck(widget)
-				self.selectedSaver = selectedRow.get_value(locInRow,0)
-				self.UsingSpeed, self.UsingFPS = self.UsingCheck()
-				self.ShowPreview()
+		if locInRow and widget:
+			if not self.SSRadio.get_active():
+				self.SSRadio.set_active(True)
+			self.EffectSaveableCheck(widget)
+			self.selectedSaver = selectedRow.get_value(locInRow,0)
+			self.UsingSpeed, self.UsingFPS = self.UsingCheck()
+			self.ShowPreview()
 
 	def GetScreenSavers(self):
 		'Get a list of the screensavers in the xscreensaver directory'
-		self.ScreenSavers = os.listdir(self.XSSDir)
+		filelist = os.listdir(self.XSSDir)
+		for item in filelist:
+			if self.is_saver(item):
+				self.ScreenSavers.append(item)
 		if len(self.ScreenSavers) == 0:
 			self.NoXscreensavers.show()
 			print "You don't have any Xscreensavers in %s" %self.XSSDir
 		self.ScreenSavers.sort()
 		for item in self.ScreenSavers:
+			
 			self.SaverListstore.append([item])
 
 	def CleanUpPreview(self):
@@ -472,10 +456,10 @@ class gwinwrap:
 
 	def SpeedChange(self, widget):
 		'Checks the option to customize speed when the speed is changed from the slider'
-		if not self.SpeedCheckBox.get_active():
-			self.SpeedCheckBox.set_active(True)
+		self.SpeedCheckBox.set_active(True)
 		self.OptionChange(widget)
-		self.ShowPreview()
+		if not self.PresetSelectionProcess:
+			self.ShowPreview()
 
 	def UsingCheck(self):
 		'Check the selected screensaver for an option by reading its --help output'
@@ -522,9 +506,7 @@ class gwinwrap:
 			treewidget = self.EffectsList
 			columns = ["Name","Description"]
 
-			# The liststore needs: Name, Description, whether it's a screensaver, speed (if screensaver), screensaver or 
-			# movie filepath, opacity, priority setting, additional arguments (hence all the values below).
-			self.EffectListstore = gtk.ListStore(str,str,bool,float,str,int,bool,str)
+			self.EffectListstore = gtk.ListStore(str,str)
 
 			self.GetSavedEffects()
 			self.EffectsList.set_model(self.EffectListstore)
@@ -536,25 +518,14 @@ class gwinwrap:
 		if treeview == "effects":	
 			self.EffectListstore.set_sort_column_id(0,gtk.SORT_ASCENDING)
 
-	def EffectManager(self,name=None,mode="list"):
-		'Returns a list of all the settings of a given custom effect name, adds settings, or removes settings.'	
-
-		if mode == "list" or mode == "remove":
-			index = self.settingLists[0].index(name)
-
-		if mode == "list":
-			settingslist = []
-			for setting in self.settingLists:
-				settingslist = settingslist + [setting[index]]	
-			return settingslist
+	def EffectManager(self,name=None,mode="add"):
+		'Returns a list of all the settings of a given custom effect name, adds settings, or removes settings.'				
 		
 		if mode == "remove":
-			for setting in self.settingLists:
-				setting.pop(index)
+			self.settingLists.pop(self.EffectNameList().index(name))
 		
 		if mode == "add":
-			for index in range(0,len(self.settingLists)):
-				self.settingLists[index] = self.settingLists[index] + [self.TempSettings[index]]
+			self.settingLists = self.settingLists + [self.TempSettings]
 
 	def SaveToDisk(self):
 		pickleWrite = open(self.pickle,"w")
@@ -568,34 +539,41 @@ class gwinwrap:
 			pickleRead = open(self.pickle,"r")
 			readitems = pickle.load(pickleRead)
 			pickleRead.close()
-			return readitems
+			returnableitems = []
+			# Make sure all effects use installed savers or are movies
+			# FIXME: This results in effects with uninstalled screensavers or incorrect filepaths getting deleted from the pickle. 
+			# It might be better to just ignore them.
+			for index in range(len(readitems)):
+				if self.is_saver(readitems[index][4]):
+					returnableitems = returnableitems + [readitems[index]]
+				elif not readitems[index][2] and os.path.exists(readitems[index][4]):
+					returnableitems = returnableitems + [readitems[index]]
+			return returnableitems
 
 		else:
-			return [self.effectList,self.descList,self.isSaverList,self.saverSpeedList,self.filepathList,self.opacityList,
-				self.priorityList,self.argList]
+			return []
+
+	def EffectNameList(self):
+		namelist = []
+		for effectid in range(len(self.settingLists)):
+			namelist.append(self.settingLists[effectid][0])
+		return namelist
 
 	def GetSavedEffects(self):
 		self.EffectListstore.clear()
-		for effectname in self.settingLists[0]:
-			# get the index of effect
-			index = self.settingLists[0].index(effectname)
-			ListstoreList = []
-			for settingid in range(0,8):
-			# iterate through all settings of that one effect
-				listlist = self.settingLists[settingid]
-				# add the settings for effect one by one
-				ListstoreList = ListstoreList + [listlist[index]]
-			self.EffectListstore.append(ListstoreList)
+		for effectid in range(len(self.settingLists)):
+			self.EffectListstore.append([self.settingLists[effectid][0],self.settingLists[effectid][1]])
 
 	def EffectsListSelect(self,widget):
+		self.PresetSelectionProcess = True
 		selectedRow, locInRow = self.EffectsListSelection.get_selected()
 		if locInRow:
 			if selectedRow.get_value(locInRow,0) != self.selectedEffect or self.CancelPressed:
 				listDescribe = ["Name:","Description:","Using a screensaver:","Screensaver Speed:",
 						"Filepath/Screensaver Name:","Opacity:","Using low CPU priority:","Additional arguments:"]
 				print "\n" + "="*40
-				for row in range(0,len(listDescribe)):
-					print listDescribe[row],selectedRow.get_value(locInRow,row)
+				for item in range(0,len(listDescribe)):
+					print listDescribe[item],self.settingLists[self.EffectNameList().index(selectedRow.get_value(locInRow,0))][item]
 				print "="*40 + "\n"
 			
 				self.CancelPressed = False
@@ -605,6 +583,7 @@ class gwinwrap:
 				self.selectedEffect = selectedRow.get_value(locInRow,0)
 				self.SetSettings(self.selectedEffect)
 				self.ShowPreview()
+				self.PresetSelectionProcess = False
 					
 
 	def ResetSettings(self):
@@ -614,6 +593,7 @@ class gwinwrap:
 		self.Opacity.set_value(100)
 		self.Speed.set_value(1.0)
 		self.CPUPriority.set_active(True)
+		self.SpeedHBox.set_sensitive(False)
 		self.SpeedCheckBox.set_active(False)
 		self.ArgLabel.set_text("")
 		self.SaveEdit.set_sensitive(False)
@@ -622,11 +602,13 @@ class gwinwrap:
 		self.SaverList.scroll_to_cell(0,use_align=True)
 		self.Apply.set_sensitive(False)
 		self.MovieChooser.unselect_all()
+		self.MovieRadio.set_active(True)
+
+	
 
 	def SetSettings(self,name):
 		self.ResetSettings()
-
-		settingslist = self.EffectManager(name)
+		settingslist = self.settingLists[self.EffectNameList().index(name)]
 
 		self.EffectName.set_text(settingslist[0])
 		self.EffectDescr.set_text(settingslist[1])
@@ -663,6 +645,14 @@ class gwinwrap:
 		selectedRow, locInRow = TreeViewSelection.get_selected()
 		if locInRow:
 			return True
+
+	def is_saver(self,saver):
+		'Just checking to make sure there arent any directories in the list.'
+		#FIXME: Check more carefully (not just for dirs)
+		if os.path.exists(self.XSSDir + saver) and not os.path.isdir(self.XSSDir + saver):
+			return True
+		else: 
+			return  False
 
 	def SetUpSocket(self,mode="socket"):
 		'Attach the socket and color it black to avoid flashes when changing previews'
