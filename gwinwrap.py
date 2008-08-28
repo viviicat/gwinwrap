@@ -44,7 +44,6 @@ import gst, re, signal, os
 class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
-	print "\n== GWINWRAP VERSION 0.1-SVN -- Have fun with your animated desktop! =="
 	def __init__(self):
 		
 		### ADJUSTABLE VARIABLES -- It won't hurt to edit these a bit
@@ -160,10 +159,23 @@ class gwinwrap:
 		self.SetUpTreeView("effects")
 		self.SetUpTreeView("screensavers")
 
+		# Express Mode
 		if startOptions.args:
-			self.selectedSaver = startOptions.args[0]
-			self.command = self.ComposeCommand("all")
-			self.RunEffect()
+			if startOptions.args[0] in self.EffectNameList():
+				print " * GWINWRAP ** Express mode enabled, launching preset \"%s\" now."%startOptions.args[0]
+				nameindex = self.EffectNameList(startOptions.args[0])
+				self.EffectsListSelection.select_path(nameindex)
+				self.PresetSelectionProcess = True
+				self.SetSettings(startOptions.args[0])
+	
+				if self.MovieRadio.get_active():
+					self.ComposeCommand("movie",express=True)
+				else:
+					self.ComposeCommand("xscreensaver",express=True)
+	
+				self.ApplyEffect()
+			else:
+				print " * GWINWRAP ** ERROR: The chosen preset \"%s\" does not exist." %startOptions.args[0]
 			if not startOptions.options.window:
 				quit()
 
@@ -308,6 +320,7 @@ class gwinwrap:
 				self.EffectManager(selectedRow.get_value(locInRow,0),"remove")
 			self.Remove.set_sensitive(False)
 			self.CleanUpPreview()
+			self.ResetSettings()
 			self.WelcomeBox.show()
 			self.GetSavedEffects()
 			
@@ -702,7 +715,7 @@ class gwinwrap:
 
 		return Socket
 
-	def ComposeCommand(self,mode="xwinwrap"):
+	def ComposeCommand(self,mode="xwinwrap",express=False):
 		'Create the command to use when launching either xwinwrap or the previews'
 		baseCommand = ["xwinwrap","-ni","-fs","-s","-st","-sp","-b","-nf"]
 
@@ -743,9 +756,9 @@ class gwinwrap:
 
 			else: self.SpeedHBox.set_sensitive(False)
 
-			command = self.Command + ["-window-id","%i"%self.Socket.window.xid]
-			
-			command = self.nice + command
+			if not express:
+				command = self.Command + ["-window-id","%i"%self.Socket.window.xid]		
+				command = self.nice + command
 
 		elif mode == "movie":
 			baseMovieCommand = "mplayer"
@@ -754,7 +767,9 @@ class gwinwrap:
 
 		elif mode == "all":
 			command = baseCommand + ["1","--","%s%s"%(self.XSSDir,self.selectedSaver),"-window-id","WID"] 
-		return command
+
+		if not express:
+			return command
 			
 
 	def Run(self,command):
@@ -768,15 +783,14 @@ class gwinwrap:
 	def Quit(self, widget):
 		self.CleanUpPreview()
 		self.SaveToDisk()
-		print "\nThis is Gwinwrap saying, \"Sayonara!\"\n"
 		gtk.main_quit()
 
 class startOptions:
 	"""This is a separate class which checks the startup command for options."""
-	parser = OptionParser(usage="usage: %prog SCREENSAVER [options]",description="Thanks for trying %prog, a gui for xwinwrap. If you want, you can use %prog to run a screensaver with xwinwrap and default commands by adding it after ./%prog. For example: './%prog glmatrix' will start the glmatrix screensaver. This option disables the rest of the interface.")
+	parser = OptionParser(usage="usage: %prog SCREENSAVER [options]",description="QUICK START: If you want, you can use %prog to automatically run one of your preset effects by adding the name (including case, spaces require quotation marks) after ./%prog. For example: ./%prog \"Cool Plasma\" will start the Cool Plasma preset effect. This option disables the rest of the interface.")
 
 	parser.add_option("-w", "--window", action="store_true", dest="window", default=False,
-			help="Show the interface even if running a screensaver directly.")
+			help="Show the interface even if running an effect directly.")
 	parser.add_option("-s", "--stop", action="store_true", dest="stop", default=False,
 			help="An 'off' button. Quits any xwinwrap instances, then quits itself.")
 	

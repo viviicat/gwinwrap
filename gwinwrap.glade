@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Aug 27 23:17:07 2008 -->
+<!--Generated with glade3 3.4.5 on Thu Aug 28 00:30:14 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
@@ -656,7 +656,7 @@
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
-                <property name="label" translatable="yes">TODO: Run chosen effect at startup</property>
+                <property name="label" translatable="yes">Run chosen effect at startup</property>
                 <property name="response_id">0</property>
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="on_RunStartUp_toggled"/>
