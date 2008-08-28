@@ -329,15 +329,10 @@ class gwinwrap:
 				DupeShowing = False
 
 		if self.EffectName.get_text() != "" and not DupeShowing:
-			namechangetosame = False
-			if widget == self.EffectName and self.EffectName.get_text() == self.OldName:
-				namechangetosame = True
-				self.SaveEdit.set_sensitive(False)
 				
 			if self.is_selected(self.SaverListSelection) or self.movieSetAndChosen():
-				if not namechangetosame:
-					self.Add.set_sensitive(True)	
-					self.SaveEdit.set_sensitive(True)
+				self.Add.set_sensitive(True)	
+				self.SaveEdit.set_sensitive(True)
 		else:
 			self.Add.set_sensitive(False)
 			self.SaveEdit.set_sensitive(False)
@@ -350,12 +345,6 @@ class gwinwrap:
 			self.SpeedHBox.set_sensitive(False)
 			self.MovieRadio.set_active(True)
 			self.MovieFile = self.MovieChooser.get_filename()
-			#temp_moviefile = self.MovieFile
-			#offset = 0
-			#for charindex in range(0,len(temp_moviefile)):
-			#	if temp_moviefile[charindex] == " ":
-			#		self.MovieFile = self.MovieFile[:charindex+offset] + "\\" + self.MovieFile[charindex+offset:]
-			#		offset = offset + 1
 			self.ShowPreview()
 
 	def Remove(self,widget):
@@ -404,34 +393,6 @@ class gwinwrap:
 		self.previewShow = self.Run(previewcommand)
 		self.Socket.show()
 
-
-			### FIXME: Gstreamer Movie Preview (doesn't work)
-
-	#		self.SetUpGst()
-	#		self.SocketOrDA = self.SetUpSocketOrDA("drawingarea")
-	#		self.socketOrDA = gtk.DrawingArea()
-	#		self.Preview.add(self.socketOrDA)
-	#		black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
-	#		self.socketOrDA.modify_bg(gtk.STATE_NORMAL,black)
-			# Create GStreamer pipeline
-	#		self.pipeline = gst.Pipeline("mypipeline")
-			# Set up our video test source
-	#		self.videotestsrc = gst.element_factory_make("videotestsrc", "video")
-			# Add it to the pipeline
-	#		self.pipeline.add(self.videotestsrc)
-			# Now we need somewhere to send the video
-	#		self.sink = gst.element_factory_make("xvimagesink", "sink")
-			# Add it to the pipeline
-	#		self.pipeline.add(self.sink)
-			# Link the video source to the sink - xv
-	#		self.videotestsrc.link(self.sink)			
-		
-	#		print self.socketOrDA.window.xid
-	#		self.sink.set_xwindow_id(self.socketOrDA.window.xid)		
-	#		self.pipeline.set_state(gst.STATE_PLAYING)
-	#		self.socketOrDA.show()
-			##
-
 		self.PreviewShowing = True
 
 	def ApplyEffect(self, New=True):
@@ -439,22 +400,7 @@ class gwinwrap:
 		if New:
 			self.command = self.ComposeCommand()
 			self.Refresh.set_sensitive(True)
-		self.RunEffect()
-
-	def SetUpGst(self):
-		# Create GStreamer pipeline
-		self.pipeline = gst.Pipeline("mypipeline")
-		# Set up our video test source
-		self.videotestsrc = gst.element_factory_make("videotestsrc", "video")
-		# Add it to the pipeline
-		self.pipeline.add(self.videotestsrc)
-		# Now we need somewhere to send the video
-		self.sink = gst.element_factory_make("xvimagesink", "sink")
-		# Add it to the pipeline
-		self.pipeline.add(self.sink)
-		# Link the video source to the sink - xv
-		self.videotestsrc.link(self.sink)
-			
+		self.RunEffect()		
 
 	def RunEffect(self):
 		self.KillXwinwrap()
