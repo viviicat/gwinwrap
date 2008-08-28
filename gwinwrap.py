@@ -45,7 +45,6 @@ class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
 	def __init__(self):
-		
 		### ADJUSTABLE VARIABLES -- It won't hurt to edit these a bit
 		# Directory for screensavers
 		self.XSSDir = "/usr/lib/xscreensaver/" 
@@ -156,6 +155,15 @@ class gwinwrap:
 		self.skippager = self.gladeXML.get_widget("skippager")
 		self.above = self.gladeXML.get_widget("above")
 		self.below = self.gladeXML.get_widget("below")
+
+		# Enable RGBA colormap
+		self.gtk_screen = self.Main.get_screen()
+		self.rgbcolormap = self.gtk_screen.get_rgb_colormap()
+		self.colormap = self.gtk_screen.get_rgba_colormap()
+		if self.colormap == None:
+			self.colormap = self.rgbcolormap
+		gtk.widget_set_default_colormap(self.colormap)
+
 
 		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",self.fullscreen:"-fs",self.skiptaskbar:"-st",
 					self.skippager:"-sp",self.above:"-a",self.below:"-b"}
@@ -754,7 +762,8 @@ class gwinwrap:
 
 	def SetUpSocket(self,mode="socket"):
 		'Attach the socket and color it black to avoid flashes when changing previews'
-
+		# Disable alpha colormap
+		gtk.widget_set_default_colormap(self.rgbcolormap)
 		if mode == "socket":
 			Socket = gtk.Socket()
 
@@ -764,6 +773,9 @@ class gwinwrap:
 		self.Preview.add(Socket)
 		black = gtk.gdk.Color(red=0, green=0, blue=0, pixel=0)
 		Socket.modify_bg(gtk.STATE_NORMAL,black)
+
+		# Re-enable alpha colormap
+		gtk.widget_set_default_colormap(self.colormap)
 
 		return Socket
 
@@ -836,6 +848,7 @@ class gwinwrap:
 		self.CleanUpPreview()
 		self.SaveToDisk()
 		self.SaveToDisk("preferences")
+		gtk.widget_pop_colormap()
 		gtk.main_quit()
 
 class startOptions:
