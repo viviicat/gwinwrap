@@ -45,9 +45,15 @@ class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
 	def __init__(self):
-		### ADJUSTABLE VARIABLES -- It won't hurt to edit these a bit
-		# Directory for screensavers
-		self.XSSDir = "/usr/lib/xscreensaver/" 
+		# TODO: Add a filechooserbutton to choose a custom directory?
+		if os.path.isdir("/usr/libexec/xscreensaver/"):
+			self.XSSDir = "/usr/libexec/xscreensaver/" 
+		elif os.path.isdir("/usr/lib64/xscreensaver/"):
+			self.XSSDir = "/usr/lib64/xscreensaver/" 
+		else:
+			self.XSSDir = "/usr/lib/xscreensaver/" 
+
+		### ADJUSTABLE VARIABLES -- It won't hurt to edit these a bit	
 		# The nice command
 		self.nice = ["nice","-n","15"]
 		# Pickle files
