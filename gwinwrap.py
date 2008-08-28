@@ -18,6 +18,28 @@
 # Author: Gavin Langdon (fusioncast@gmail.com)
 # Copyright (C) 2008 Gavin Langdon
 
+
+
+
+
+
+
+
+
+
+
+# TODO:Add filter combobox for movies/savers/all?
+
+
+
+
+
+
+
+
+
+
+
 import sys, subprocess, os, string
 try:
  	import pygtk
@@ -522,7 +544,7 @@ class gwinwrap:
 		'Returns a list of all the settings of a given custom effect name, adds settings, or removes settings.'				
 		
 		if mode == "remove":
-			self.settingLists.pop(self.EffectNameList().index(name))
+			self.settingLists.pop(self.EffectNameList(name))
 		
 		if mode == "add":
 			self.settingLists = self.settingLists + [self.TempSettings]
@@ -553,11 +575,15 @@ class gwinwrap:
 		else:
 			return []
 
-	def EffectNameList(self):
+	def EffectNameList(self,name=None):
 		namelist = []
 		for effectid in range(len(self.settingLists)):
 			namelist.append(self.settingLists[effectid][0])
-		return namelist
+
+		if name:
+			return namelist.index(name)
+		else:
+			return namelist
 
 	def GetSavedEffects(self):
 		self.EffectListstore.clear()
@@ -573,7 +599,7 @@ class gwinwrap:
 						"Filepath/Screensaver Name:","Opacity:","Using low CPU priority:","Additional arguments:"]
 				print "\n" + "="*40
 				for item in range(0,len(listDescribe)):
-					print listDescribe[item],self.settingLists[self.EffectNameList().index(selectedRow.get_value(locInRow,0))][item]
+					print listDescribe[item],self.settingLists[self.EffectNameList(selectedRow.get_value(locInRow,0))][item]
 				print "="*40 + "\n"
 			
 				self.CancelPressed = False
@@ -608,7 +634,7 @@ class gwinwrap:
 
 	def SetSettings(self,name):
 		self.ResetSettings()
-		settingslist = self.settingLists[self.EffectNameList().index(name)]
+		settingslist = self.settingLists[self.EffectNameList(name)]
 
 		self.EffectName.set_text(settingslist[0])
 		self.EffectDescr.set_text(settingslist[1])
@@ -671,7 +697,12 @@ class gwinwrap:
 
 	def ComposeCommand(self,mode="xwinwrap"):
 		'Create the command to use when launching either xwinwrap or the previews'
-		baseCommand = "xwinwrap -ni -fs -s -st -sp -b -nf -o "
+		baseCommand = "xwinwrap -ni -fs -s -st -sp -b -nf"
+
+		# Screensavers that use images -- they can't run with -argb option
+		imagesavers = ["antspotlight","blitspin","bumps","carousel","decayscreen","distort","flipscreen3d","gleidescope","glslideshow","jigsaw",
+				"mirrorblob","rotzoomer","slidescreen","spotlight","twang","zoom"]
+
 		if mode == "xwinwrap":
 			opacity = float(self.Opacity.get_value())			
 			opacity = opacity/100		
@@ -681,7 +712,10 @@ class gwinwrap:
 			if self.CPUPriority.get_active():
 				baseCommand = self.nice + baseCommand
 
-			command = baseCommand + "%f"%opacity + " -- " + self.Command + Args
+			if not self.selectedSaver in imagesavers and self.SSRadio.get_active():
+				baseCommand = "%s %s "%(baseCommand,"-argb")
+
+			command = baseCommand + " -o %f"%opacity + " -- " + self.Command + Args
 
 			if self.MovieRadio.get_active():
 				command = command + "-wid WID"
