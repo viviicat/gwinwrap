@@ -51,11 +51,12 @@ class gwinwrap:
 		self.XSSDir = "/usr/lib/xscreensaver/" 
 		# The nice command
 		self.nice = ["nice","-n","15"]
-		# Pickle file
-		self.pickle = "presets.gwrp"
+		# Pickle files
+		self.pickle = ["presets.gwrp","prefs.gwrp"]
 		### END AJUSTABLE VARIABLES ###
 
 		self.settingLists = self.ReadFromDisk()
+		self.PrefCommand = self.ReadFromDisk("preferences")
 
 		# Set the Glade file
 		self.gladefile = "gwinwrap.glade"
@@ -97,6 +98,8 @@ class gwinwrap:
 			, "on_Add_clicked" : self.Add
 			, "on_MovieRadio_toggled" : self.MovieRadioToggled
 			, "on_SSRadio_toggled" : self.SaverRadioToggled
+			, "on_Preferences_clicked" : self.PrefPane
+			, "on_ClosePrefs_clicked" : self.PrefPane
 		}		
 		self.gladeXML.signal_autoconnect(dic)
 
@@ -110,6 +113,7 @@ class gwinwrap:
 			print " ** Disabling video support -- you don't have mplayer installed"
 
 		# Get the widgets we need
+		# FIXME: isn't there a better way to do this?
 		self.Main = self.gladeXML.get_widget("Main")
 		self.SpeedCheckBox = self.gladeXML.get_widget("SpeedCheckBox")
 		self.Speed = self.gladeXML.get_widget("Speed")
@@ -142,8 +146,21 @@ class gwinwrap:
 		self.EffectDescr = self.gladeXML.get_widget("EffectDescr")
 		self.Edit = self.gladeXML.get_widget("Edit")
 		self.DuplicateWarning = self.gladeXML.get_widget("DuplicateWarning")
+		self.Prefs = self.gladeXML.get_widget("Prefs")
+		self.Preferences = self.gladeXML.get_widget("Preferences")
+		self.noinput = self.gladeXML.get_widget("noinput")
+		self.nofocus = self.gladeXML.get_widget("nofocus")
+		self.sticky = self.gladeXML.get_widget("sticky")
+		self.fullscreen = self.gladeXML.get_widget("fullscreen")
+		self.skiptaskbar = self.gladeXML.get_widget("skiptaskbar")
+		self.skippager = self.gladeXML.get_widget("skippager")
+		self.above = self.gladeXML.get_widget("above")
+		self.below = self.gladeXML.get_widget("below")
 
-		self.InitializeMovieChooser()
+		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",self.fullscreen:"-fs",self.skiptaskbar:"-st",
+					self.skippager:"-sp",self.above:"-a",self.below:"-b"}
+
+		self.InitializeChoosers()
 
 		# Enable stopping the already running xwinwrap process
 		if self.xwinwrap_running():
@@ -179,8 +196,26 @@ class gwinwrap:
 			if not startOptions.options.window:
 				quit()
 
+		self.SetPrefCheckBoxes()
+
 		self.Main.show()
+
+	def SetPrefCheckBoxes(self):
+		for pref in self.PrefButtonID:
+			if self.PrefButtonID[pref] in self.PrefCommand:
+				pref.set_active(True)
 	
+	def PrefPane(self,widget):
+		if widget == self.Preferences:
+			self.Prefs.show()
+		else:
+			self.Prefs.hide()
+			self.PrefCommand = []
+			for pref in self.PrefButtonID:
+				if pref.get_active():
+					self.PrefCommand = self.PrefCommand + [self.PrefButtonID[pref]]
+			# FIXME: We should refresh the apply button now if an effect is ready.
+
 	def MovieRadioToggled(self,widget):
 		if self.MovieChooser.get_filename() and widget.get_active():
 			self.ChooseMovie(widget)
@@ -325,7 +360,7 @@ class gwinwrap:
 			self.GetSavedEffects()
 			
 
-	def InitializeMovieChooser(self):
+	def InitializeChoosers(self):
 		self.MovieFilter = gtk.FileFilter()
 		self.MovieFilter.add_mime_type("video/*")
 
@@ -569,28 +604,45 @@ class gwinwrap:
 		if mode == "add":
 			self.settingLists = self.settingLists + [self.TempSettings]
 
-	def SaveToDisk(self):
-		pickleWrite = open(self.pickle,"w")
-		pickle.dump(self.settingLists,pickleWrite)
+	def SaveToDisk(self, mode="presets"):
+		if mode == "presets":
+			picklefile = self.pickle[0]
+			dump = self.settingLists
+		elif mode == "preferences":
+			picklefile = self.pickle[1]
+			dump = self.PrefCommand
+
+		pickleWrite = open(picklefile,"w")
+		pickle.dump(dump,pickleWrite)
 		pickleWrite.close()
-		print " * The settings have been saved to %s." %self.pickle
+		print " * The %s have been saved to %s." %(mode,picklefile)
 		return
 
-	def ReadFromDisk(self):
-		if os.path.exists(self.pickle):
-			pickleRead = open(self.pickle,"r")
+	def ReadFromDisk(self,mode="presets"):
+		if mode == "presets":
+			picklefile = self.pickle[0]
+		elif mode == "preferences":
+			picklefile = self.pickle[1]
+
+		if os.path.exists(picklefile):
+			pickleRead = open(picklefile,"r")
 			readitems = pickle.load(pickleRead)
 			pickleRead.close()
-			returnableitems = []
-			# Make sure all effects use installed savers or are movies
-			# FIXME: This results in effects with uninstalled screensavers or incorrect filepaths getting deleted from the pickle. 
-			# It might be better to just ignore them.
-			for index in range(len(readitems)):
-				if self.is_saver(readitems[index][4]):
-					returnableitems = returnableitems + [readitems[index]]
-				elif not readitems[index][2] and os.path.exists(readitems[index][4]):
-					returnableitems = returnableitems + [readitems[index]]
-			return returnableitems
+
+			if mode == "presets":
+				returnableitems = []
+				# Make sure all effects use installed savers or are movies
+				# FIXME: This results in effects with uninstalled screensavers or incorrect filepaths getting deleted from the pickle. 
+				# It might be better to just ignore them.
+				for index in range(len(readitems)):
+					if self.is_saver(readitems[index][4]):
+						returnableitems = returnableitems + [readitems[index]]
+					elif not readitems[index][2] and os.path.exists(readitems[index][4]):
+						returnableitems = returnableitems + [readitems[index]]
+				return returnableitems
+
+			elif mode == "preferences":
+				return readitems
 
 		else:
 			return []
@@ -717,7 +769,7 @@ class gwinwrap:
 
 	def ComposeCommand(self,mode="xwinwrap",express=False):
 		'Create the command to use when launching either xwinwrap or the previews'
-		baseCommand = ["xwinwrap","-ni","-fs","-s","-st","-sp","-b","-nf"]
+		baseCommand = ["xwinwrap"] + self.PrefCommand
 
 		# Screensavers that use images -- they can't run with -argb option
 		imagesavers = ["antspotlight","blitspin","bumps","carousel","decayscreen","distort","flipscreen3d","gleidescope","glslideshow","jigsaw",
@@ -783,6 +835,7 @@ class gwinwrap:
 	def Quit(self, widget):
 		self.CleanUpPreview()
 		self.SaveToDisk()
+		self.SaveToDisk("preferences")
 		gtk.main_quit()
 
 class startOptions:
