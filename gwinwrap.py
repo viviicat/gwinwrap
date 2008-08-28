@@ -19,25 +19,7 @@
 # Copyright (C) 2008 Gavin Langdon
 
 
-
-
-
-
-
-
-
-
-
 # TODO:Add filter combobox for movies/savers/all?
-
-
-
-
-
-
-
-
-
 
 
 import sys, subprocess, os, string
@@ -69,7 +51,7 @@ class gwinwrap:
 		# Directory for screensavers
 		self.XSSDir = "/usr/lib/xscreensaver/" 
 		# The nice command
-		self.nice = "nice -n 15 "
+		self.nice = ["nice","-n","15"]
 		# Pickle file
 		self.pickle = "presets.gwrp"
 		### END AJUSTABLE VARIABLES ###
@@ -88,6 +70,7 @@ class gwinwrap:
 		self.CancelPressed = False
 		self.PresetSelectionProcess = False
 		self.ScreenSavers = []
+		self.OldName = ""
 
 		# Create our dictionary and connect it
 		dic = {"on_Main_destroy" : self.Quit
@@ -159,6 +142,7 @@ class gwinwrap:
 		self.Remove= self.gladeXML.get_widget("Remove")
 		self.EffectDescr = self.gladeXML.get_widget("EffectDescr")
 		self.Edit = self.gladeXML.get_widget("Edit")
+		self.DuplicateWarning = self.gladeXML.get_widget("DuplicateWarning")
 
 		self.InitializeMovieChooser()
 
@@ -223,7 +207,6 @@ class gwinwrap:
 			if locInRow:
 				coreEffect = selectedrow.get_value(locInRow,0)
 		else:
-			print "not using a saver"
 			usingsaver = False
 			coreEffect = self.MovieChooser.get_filename()
 			
@@ -243,6 +226,7 @@ class gwinwrap:
 		self.EffectsList.scroll_to_cell(nameindex,use_align=True)
 		print " * Updated settings."
 		self.CloseEditing()
+		self.OldName = ""
 
 	def ShowNew(self,widget):
 		self.Add.show()
@@ -275,26 +259,42 @@ class gwinwrap:
 		self.SettingsHBox.set_sensitive(False)
 
 	def EffectSaveableCheck(self,widget):
+		DupeShowing = False
+		if not self.PresetSelectionProcess:
+			if self.EffectName.get_text() in self.EffectNameList() and self.EffectName.get_text() != self.OldName:
+				self.DuplicateWarning.show()
+				DupeShowing = True
+			else:
+				DupeShowing = False
 
-		if self.EffectName.get_text() != "":
+		if self.EffectName.get_text() != "" and not DupeShowing:
+			namechangetosame = False
+			if widget == self.EffectName and self.EffectName.get_text() == self.OldName:
+				namechangetosame = True
+				self.SaveEdit.set_sensitive(False)
+				
 			if self.is_selected(self.SaverListSelection) or self.movieSetAndChosen():
-				self.Add.set_sensitive(True)
-				self.SaveEdit.set_sensitive(True)
+				if not namechangetosame:
+					self.Add.set_sensitive(True)	
+					self.SaveEdit.set_sensitive(True)
 		else:
 			self.Add.set_sensitive(False)
 			self.SaveEdit.set_sensitive(False)
+
+		if not DupeShowing:
+			self.DuplicateWarning.hide()
 
 	def ChooseMovie(self,widget):
 		if self.MovieChooser.get_filename():
 			self.SpeedHBox.set_sensitive(False)
 			self.MovieRadio.set_active(True)
 			self.MovieFile = self.MovieChooser.get_filename()
-			temp_moviefile = self.MovieFile
-			offset = 0
-			for charindex in range(0,len(temp_moviefile)):
-				if temp_moviefile[charindex] == " ":
-					self.MovieFile = self.MovieFile[:charindex+offset] + "\\" + self.MovieFile[charindex+offset:]
-					offset = offset + 1
+			#temp_moviefile = self.MovieFile
+			#offset = 0
+			#for charindex in range(0,len(temp_moviefile)):
+			#	if temp_moviefile[charindex] == " ":
+			#		self.MovieFile = self.MovieFile[:charindex+offset] + "\\" + self.MovieFile[charindex+offset:]
+			#		offset = offset + 1
 			self.ShowPreview()
 
 	def Remove(self,widget):
@@ -308,6 +308,7 @@ class gwinwrap:
 				self.EffectManager(selectedRow.get_value(locInRow,0),"remove")
 			self.Remove.set_sensitive(False)
 			self.CleanUpPreview()
+			self.WelcomeBox.show()
 			self.GetSavedEffects()
 			
 
@@ -397,7 +398,10 @@ class gwinwrap:
 		self.KillXwinwrap()
 		if self.MovieRadio.get_active():
 			self.CleanUpPreview()
-		print " * GWINWRAP ** Running: " + self.command
+		cmd = ""
+		for item in self.command:
+			cmd = cmd + item + " "
+		print " * GWINWRAP ** Running: " + cmd
 		self.Run(self.command)
 
 	def Refresh(self, widget):
@@ -444,7 +448,7 @@ class gwinwrap:
 		'Clean up the old preview/welcome note in preparation for the new preview'
 		if self.PreviewShowing:
 			self.Socket.destroy()
-			self.Run("kill %s" %self.previewShow.pid)
+			self.Run(["kill","%s"%self.previewShow.pid])
 			self.PreviewShowing = False
 		else:
 			self.WelcomeBox.hide()
@@ -464,7 +468,7 @@ class gwinwrap:
 	def KillXwinwrap(self):
 		if self.xwinwrap_running():
 			print " * GWINWRAP ** Killing current xwinwrap process."
-			self.Run("killall xwinwrap")
+			self.Run(["killall","xwinwrap"])
 
 	def xwinwrap_running(self):
 		'Use pidof and pgrep to determine if xwinwrap is running'
@@ -501,19 +505,22 @@ class gwinwrap:
 		'Custom values in order to make the speed-affected screensavers slower. Roughly merges the --maxfps option with the --speed option.'
 		if self.SpeedCheckBox.get_active():
 			speedvalue = self.Speed.get_value()
-			speedStr = ""
+			speedArg = []
+			fpsArg = None
 			if speedvalue >= 5.0:
 				speed = speedvalue - 5
 			elif self.UsingFPS: 
 				speed = 1
 				fps = speedvalue + 10
-				fpsArg = " --maxfps "
-				speedStr = "%s%i"%(fpsArg,fps)
+				fpsArg = ["--maxfps","%f"%fps]
 			else:
 				speed = speedvalue
 
-			speedStr = speedStr + " -speed %i" %speed
-			self.Command = self.Command + speedStr
+			speedArg = speedArg + ["--speed","%i"%speed]
+			self.Command = self.Command + speedArg
+
+			if fpsArg:
+				self.Command = self.Command + fpsArg
 
 	def SetUpTreeView(self,treeview="screensavers"):
 		if treeview == "screensavers":
@@ -591,10 +598,10 @@ class gwinwrap:
 			self.EffectListstore.append([self.settingLists[effectid][0],self.settingLists[effectid][1]])
 
 	def EffectsListSelect(self,widget):
-		self.PresetSelectionProcess = True
 		selectedRow, locInRow = self.EffectsListSelection.get_selected()
 		if locInRow:
 			if selectedRow.get_value(locInRow,0) != self.selectedEffect or self.CancelPressed:
+				self.PresetSelectionProcess = True
 				listDescribe = ["Name:","Description:","Using a screensaver:","Screensaver Speed:",
 						"Filepath/Screensaver Name:","Opacity:","Using low CPU priority:","Additional arguments:"]
 				print "\n" + "="*40
@@ -629,8 +636,8 @@ class gwinwrap:
 		self.Apply.set_sensitive(False)
 		self.MovieChooser.unselect_all()
 		self.MovieRadio.set_active(True)
-
-	
+		self.DuplicateWarning.hide()
+		self.OldName = ""
 
 	def SetSettings(self,name):
 		self.ResetSettings()
@@ -697,7 +704,7 @@ class gwinwrap:
 
 	def ComposeCommand(self,mode="xwinwrap"):
 		'Create the command to use when launching either xwinwrap or the previews'
-		baseCommand = "xwinwrap -ni -fs -s -st -sp -b -nf"
+		baseCommand = ["xwinwrap","-ni","-fs","-s","-st","-sp","-b","-nf"]
 
 		# Screensavers that use images -- they can't run with -argb option
 		imagesavers = ["antspotlight","blitspin","bumps","carousel","decayscreen","distort","flipscreen3d","gleidescope","glslideshow","jigsaw",
@@ -707,24 +714,28 @@ class gwinwrap:
 			opacity = float(self.Opacity.get_value())			
 			opacity = opacity/100		
 	
-			Args = " " + self.ArgLabel.get_text()
+			Args = self.ArgLabel.get_text()
 					
 			if self.CPUPriority.get_active():
 				baseCommand = self.nice + baseCommand
 
 			if not self.selectedSaver in imagesavers and self.SSRadio.get_active():
-				baseCommand = "%s %s "%(baseCommand,"-argb")
+				baseCommand.append("-argb")
 
-			command = baseCommand + " -o %f"%opacity + " -- " + self.Command + Args
+			command = baseCommand + ["-o","%f"%opacity,"--"] + self.Command
+
+			if Args:
+				command = command + [Args]
+
 
 			if self.MovieRadio.get_active():
-				command = command + "-wid WID"
+				command = command + ["-wid","WID"]
 			else:
-				command = command + " -window-id WID"
+				command = command + ["-window-id","WID"]
 
 		elif mode == "xscreensaver":
 
-			self.Command = "%s%s"%(self.XSSDir,self.selectedSaver)
+			self.Command = ["%s%s"%(self.XSSDir,self.selectedSaver)]
 	
 			if self.UsingSpeed:
 				self.SpeedHBox.set_sensitive(True)
@@ -732,26 +743,23 @@ class gwinwrap:
 
 			else: self.SpeedHBox.set_sensitive(False)
 
-			command = self.Command + " -window-id %i"%self.Socket.window.xid
+			command = self.Command + ["-window-id","%i"%self.Socket.window.xid]
 			
 			command = self.nice + command
 
 		elif mode == "movie":
-			baseMovieCommand = "mplayer "
-			self.Command = baseMovieCommand + "%s -quiet"%self.MovieFile
-			command = self.Command + " -wid %i"%self.Socket.window.xid
+			baseMovieCommand = "mplayer"
+			self.Command = [baseMovieCommand,"%s"%self.MovieFile,"-quiet"]
+			command = self.Command + ["-wid","%i"%self.Socket.window.xid]
 
 		elif mode == "all":
-			command = baseCommand + " 1 -- %s%s -window-id WID" %(self.XSSDir,self.selectedSaver)
+			command = baseCommand + ["1","--","%s%s"%(self.XSSDir,self.selectedSaver),"-window-id","WID"] 
 		return command
 			
 
 	def Run(self,command):
-		'Change the command (in a string) into a list for subprocess, Launch quietly, and return the object for PID referencing'
+		'Launch quietly, and return the object for PID referencing'
 	#	signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-		command = " " + command + " "
-		command = command[1:-1].split()
-
 		popen_object = subprocess.Popen(command, stdout=open(os.devnull, 'w'),stderr=open(os.devnull,'w'))
 
 		return popen_object
