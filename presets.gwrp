@@ -1,278 +1,290 @@
 (lp0
 (lp1
-S'Cool Plasma'
+S'Atlantis'
 p2
-aS'plasma with a slow setting'
+aS'fishies swimming around'
 p3
 aI01
-aF2.5802469135802468
-aS'plasma'
+aI0
+aS'atlantis'
 p4
-aF50.0
+aF100.0
 aI01
 aS''
 p5
 aa(lp6
-S'Atlantis'
+S'Blocktube'
 p7
-aS'fishies swimming around'
+aS'sliding panes in a tube'
 p8
 aI01
 aI0
-aS'atlantis'
+aS'blocktube'
 p9
 aF100.0
 aI01
 ag5
 aa(lp10
-S'Blocktube'
+S'Deco'
 p11
-aS'sliding panes in a tube'
+aS'art deco on your desktop'
 p12
 aI01
 aI0
-aS'blocktube'
+aS'deco'
 p13
 aF100.0
 aI01
 ag5
 aa(lp14
-S'Circuit'
+S'FuzzyFlakes'
 p15
-aS'for the inner geek in all of us'
+aS'yellow snow in a pink world'
 p16
 aI01
 aI0
-aS'circuit'
+aS'fuzzyflakes'
 p17
 aF100.0
 aI01
 ag5
 aa(lp18
-S'Deco'
+S'Lockward'
 p19
-aS'art deco on your desktop'
+aS'a simple effect'
 p20
 aI01
 aI0
-aS'deco'
+aS'lockward'
 p21
 aF100.0
 aI01
 ag5
 aa(lp22
-S'FuzzyFlakes'
+S'MatrixView'
 p23
-aS'yellow snow in a pink world'
+aS"it's the matrix too!"
 p24
 aI01
 aI0
-aS'fuzzyflakes'
+aS'matrixview'
 p25
 aF100.0
 aI01
 ag5
 aa(lp26
-S'Lockward'
+S'Molecule'
 p27
-aS'a simple effect'
+aS'study for chemistry'
 p28
 aI01
 aI0
-aS'lockward'
+aS'molecule'
 p29
 aF100.0
 aI01
 ag5
 aa(lp30
-S'MatrixView'
+S'Noof'
 p31
-aS"it's the matrix too!"
+aS'swirling stars of color'
 p32
 aI01
 aI0
-aS'matrixview'
+aS'noof'
 p33
 aF100.0
 aI01
 ag5
 aa(lp34
-S'Molecule'
+S'Penrose'
 p35
-aS'study for chemistry'
+aS'colored tiles'
 p36
 aI01
 aI0
-aS'molecule'
+aS'penrose'
 p37
 aF100.0
 aI01
 ag5
 aa(lp38
-S'Noof'
+S'PopSquares'
 p39
-aS'swirling stars of color'
+aS'wonderful blue squares'
 p40
 aI01
 aI0
-aS'noof'
+aS'popsquares'
 p41
 aF100.0
 aI01
 ag5
 aa(lp42
-S'Penrose'
+S'Ripples'
 p43
-aS'colored tiles'
+aS'brown raindrops'
 p44
 aI01
 aI0
-aS'penrose'
+aS'ripples'
 p45
 aF100.0
 aI01
 ag5
 aa(lp46
-S'PopSquares'
+S'SkyRocket'
 p47
-aS'wonderful blue squares'
+aS'launch your very own rocket!'
 p48
 aI01
 aI0
-aS'popsquares'
+aS'skyrocket'
 p49
 aF100.0
 aI01
 ag5
 aa(lp50
-S'Ripples'
+S'GLMatrix'
 p51
-aS'brown raindrops'
+aS"it's the matrix!"
 p52
 aI01
 aI0
-aS'ripples'
+aS'glmatrix'
 p53
 aF100.0
 aI01
 ag5
 aa(lp54
-S'SkyRocket'
+S'Voronoi'
 p55
-aS'launch your very own rocket!'
+aS'stars and shapes'
 p56
 aI01
 aI0
-aS'skyrocket'
+aS'voronoi'
 p57
 aF100.0
 aI01
 ag5
 aa(lp58
-S'GLMatrix'
+S'Euphoria'
 p59
-aS"it's the matrix!"
+aS'slow euphoria'
 p60
 aI01
-aI0
-aS'glmatrix'
+aF2.7777777777777777
+aS'euphoria'
 p61
 aF100.0
 aI01
 ag5
 aa(lp62
-S'Voronoi'
+S'Helios'
 p63
-aS'stars and shapes'
+aS'bubbly thingies'
 p64
 aI01
 aI0
-aS'voronoi'
+aS'helios'
 p65
 aF100.0
 aI01
 ag5
 aa(lp66
-S'Euphoria'
+S'Lattice'
 p67
-aS'slow euphoria'
+aS'chains or donuts or something...'
 p68
 aI01
-aF2.7777777777777777
-aS'euphoria'
+aI0
+aS'lattice'
 p69
 aF100.0
 aI01
 ag5
 aa(lp70
-S'Flocks'
+S'Hyperspace'
 p71
-aS'are they fish or triangles?'
+aS'where are we?'
 p72
 aI01
 aI0
-aS'flocks'
+aS'hyperspace'
 p73
 aF100.0
 aI01
 ag5
 aa(lp74
-S'Helios'
+S'FieldLines'
 p75
-aS'bubbly thingies'
+aS'colored lines'
 p76
 aI01
 aI0
-aS'helios'
+aS'fieldlines'
 p77
 aF100.0
 aI01
 ag5
 aa(lp78
-S'Lattice'
+S'CWaves'
 p79
-aS'chains or donuts or something...'
+aS'smooth horizontalness'
 p80
 aI01
 aI0
-aS'lattice'
+aS'cwaves'
 p81
 aF100.0
 aI01
 ag5
 aa(lp82
-S'Hyperspace'
+S'XMatrix'
 p83
-aS'where are we?'
+aS'the ultimate geek dream desktop'
 p84
 aI01
 aI0
-aS'hyperspace'
+aS'xmatrix'
 p85
 aF100.0
 aI01
 ag5
 aa(lp86
-S'FieldLines'
+S'Flocks'
 p87
-aS'colored lines'
+aS'are they fish or triangles?'
 p88
 aI01
 aI0
-aS'fieldlines'
+aS'flocks'
 p89
 aF100.0
 aI01
 ag5
 aa(lp90
-S'CWaves'
+S'Cool Plasma'
 p91
-aS'smooth horizontalness'
+aS'plasma with a slow setting'
 p92
 aI01
-aI0
-aS'cwaves'
+aF2.2000000000000002
+aS'plasma'
 p93
+aF50.0
+aI01
+ag5
+aa(lp94
+S'Circuit'
+p95
+aS'for the geek in all of us'
+p96
+aI01
+aI0
+aS'circuit'
+p97
 aF100.0
 aI01
 ag5

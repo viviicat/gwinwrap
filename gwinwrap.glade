@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Aug 28 01:54:40 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Aug 29 02:26:45 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
     <property name="height_request">500</property>
     <property name="title" translatable="yes">Gwinwrap</property>
+    <property name="resizable">False</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <signal name="destroy" handler="on_Main_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">10</property>
-        <property name="spacing">5</property>
         <child>
           <widget class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
@@ -108,41 +108,180 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkRadioButton" id="SSRadio">
+                      <widget class="GtkVBox" id="vbox7">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Screen Saver:</property>
-                        <property name="response_id">0</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">MovieRadio</property>
-                        <signal name="toggled" handler="on_SSRadio_toggled"/>
+                        <child>
+                          <widget class="GtkRadioButton" id="SSRadio">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="label" translatable="yes">Screen Saver:</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <property name="group">MovieRadio</property>
+                            <signal name="toggled" handler="on_SSRadio_toggled"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                            <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+                            <child>
+                              <widget class="GtkTreeView" id="SaverList">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="has_focus">True</property>
+                                <property name="headers_visible">False</property>
+                                <property name="fixed_height_mode">True</property>
+                                <signal name="cursor_changed" handler="on_SaverList_cursor_changed"/>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="padding">5</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHBox" id="SpeedHBox">
+                            <property name="spacing">5</property>
+                            <child>
+                              <widget class="GtkCheckButton" id="SpeedCheckBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="label" translatable="yes">Custom Speed</property>
+                                <property name="response_id">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_SpeedCheckBox_toggled"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHScale" id="Speed">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="update_policy">GTK_UPDATE_DELAYED</property>
+                                <property name="adjustment">1 1 75 15 10 10</property>
+                                <property name="draw_value">False</property>
+                                <signal name="value_changed" handler="on_Speed_value_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
                         <property name="padding">5</property>
                         <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                      <widget class="GtkVBox" id="SettingsHBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="spacing">5</property>
                         <child>
-                          <widget class="GtkTreeView" id="SaverList">
+                          <widget class="GtkHBox" id="hbox2">
+                            <property name="visible">True</property>
+                            <property name="has_tooltip">True</property>
+                            <child>
+                              <widget class="GtkLabel" id="label2">
+                                <property name="visible">True</property>
+                                <property name="tooltip" translatable="yes">Adjust the opacity of the effect</property>
+                                <property name="label" translatable="yes">Opacity</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHScale" id="Opacity">
+                                <property name="visible">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip" translatable="yes">Adjust the opacity of the effect</property>
+                                <property name="update_policy">GTK_UPDATE_DELAYED</property>
+                                <property name="adjustment">100 0 110 1 10 10</property>
+                                <property name="restrict_to_fill_level">False</property>
+                                <property name="fill_level">100</property>
+                                <property name="digits">0</property>
+                                <property name="value_pos">GTK_POS_RIGHT</property>
+                                <signal name="value_changed" handler="on_Opacity_value_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="padding">5</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkCheckButton" id="CPUPriority">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="has_focus">True</property>
-                            <property name="headers_visible">False</property>
-                            <property name="fixed_height_mode">True</property>
-                            <signal name="cursor_changed" handler="on_SaverList_cursor_changed"/>
+                            <property name="has_tooltip">True</property>
+                            <property name="tooltip" translatable="yes">Choose whether or not to be nice to other processes (nice -n 15)</property>
+                            <property name="label" translatable="yes">Run with low CPU priority</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_CPUPriority_toggled"/>
                           </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHBox" id="customHBox">
+                            <property name="visible">True</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <widget class="GtkLabel" id="label12">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Terminal Options:</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="ArgLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip" translatable="yes">Common options include "-speed #" and "-maxfps #". Consult the man pages of the effect for more details.</property>
+                                <signal name="changed" handler="on_ArgLabel_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">2</property>
+                          </packing>
                         </child>
                       </widget>
                       <packing>
-                        <property name="padding">5</property>
+                        <property name="expand">False</property>
+                        <property name="padding">9</property>
                         <property name="position">5</property>
                       </packing>
                     </child>
@@ -238,6 +377,7 @@
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                         <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                         <child>
                           <widget class="GtkTreeView" id="EffectsList">
                             <property name="visible">True</property>
@@ -246,6 +386,9 @@
                           </widget>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="padding">5</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkHButtonBox" id="hbuttonbox2">
@@ -296,7 +439,6 @@
                       </widget>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="padding">5</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -311,331 +453,366 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
+                <property name="spacing">5</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox4">
-                    <property name="visible">True</property>
+                  <widget class="GtkHBox" id="Preview">
                     <child>
-                      <widget class="GtkHBox" id="Preview">
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkVBox" id="WelcomeBox">
-                        <property name="visible">True</property>
-                        <property name="spacing">10</property>
-                        <child>
-                          <widget class="GtkHBox" id="hbox6">
-                            <property name="visible">True</property>
-                            <property name="spacing">5</property>
-                            <child>
-                              <widget class="GtkImage" id="image4">
-                                <property name="visible">True</property>
-                                <property name="xalign">1</property>
-                                <property name="stock">gtk-dialog-info</property>
-                                <property name="icon_size">6</property>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label5">
-                                <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;&lt;big&gt;Welcome to Gwinwrap&lt;/big&gt;&lt;/big&gt;&lt;/b&gt;</property>
-                                <property name="use_markup">True</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkVBox" id="vbox5">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkHBox" id="hbox3">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkImage" id="image1">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">1</property>
-                                    <property name="stock">gtk-go-back</property>
-                                    <property name="icon_size">5</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="padding">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label1">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Choose an effect from the list&lt;/big&gt;&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                    <property name="wrap">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkHBox" id="hbox5">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkImage" id="image3">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">1</property>
-                                    <property name="stock">gtk-apply</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="padding">11</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label4">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Apply the effect&lt;/big&gt;&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="padding">5</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkHBox" id="hbox10">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkImage" id="image2">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">1</property>
-                                    <property name="stock">gtk-new</property>
-                                    <property name="icon_size">5</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="padding">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label3">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Create your own custom effects&lt;/big&gt;&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                    <property name="wrap">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkVBox" id="NewHelpBox">
-                        <child>
-                          <widget class="GtkHBox" id="hbox9">
-                            <property name="visible">True</property>
-                            <property name="spacing">5</property>
-                            <child>
-                              <widget class="GtkImage" id="image8">
-                                <property name="visible">True</property>
-                                <property name="xalign">1</property>
-                                <property name="stock">gtk-dialog-info</property>
-                                <property name="icon_size">6</property>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label6">
-                                <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;&lt;big&gt;Adding a new effect&lt;/big&gt;&lt;/big&gt;&lt;/b&gt;</property>
-                                <property name="use_markup">True</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label11">
-                            <property name="visible">True</property>
-                            <property name="yalign">0</property>
-                            <property name="label" translatable="yes">Type in a name and description for your new effect. Then choose a video or screensaver. You can set options for your effect such as opacity and speed, and test it on the desktop with Apply. Save your effect by clicking Add.</property>
-                            <property name="wrap">True</property>
-                          </widget>
-                          <packing>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="padding">5</property>
+                  </packing>
                 </child>
                 <child>
-                  <widget class="GtkVBox" id="SettingsHBox">
+                  <widget class="GtkVBox" id="WelcomeBox">
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="spacing">5</property>
+                    <property name="spacing">10</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <widget class="GtkHBox" id="hbox6">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
+                        <property name="spacing">5</property>
                         <child>
-                          <widget class="GtkLabel" id="label2">
+                          <widget class="GtkImage" id="image4">
                             <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Adjust the opacity of the effect</property>
-                            <property name="label" translatable="yes">Opacity</property>
+                            <property name="xalign">1</property>
+                            <property name="stock">gtk-dialog-info</property>
+                            <property name="icon_size">6</property>
                           </widget>
-                          <packing>
-                            <property name="expand">False</property>
-                          </packing>
                         </child>
                         <child>
-                          <widget class="GtkHScale" id="Opacity">
+                          <widget class="GtkLabel" id="label5">
                             <property name="visible">True</property>
-                            <property name="has_tooltip">True</property>
-                            <property name="tooltip" translatable="yes">Adjust the opacity of the effect</property>
-                            <property name="update_policy">GTK_UPDATE_DELAYED</property>
-                            <property name="adjustment">100 0 110 1 10 10</property>
-                            <property name="restrict_to_fill_level">False</property>
-                            <property name="fill_level">100</property>
-                            <property name="digits">0</property>
-                            <property name="value_pos">GTK_POS_RIGHT</property>
-                            <signal name="value_changed" handler="on_Opacity_value_changed"/>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;&lt;big&gt;Welcome to Gwinwrap&lt;/big&gt;&lt;/big&gt;&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkVBox" id="vbox5">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox3">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image1">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="stock">gtk-go-back</property>
+                                <property name="icon_size">5</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="padding">5</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Choose an effect from the list&lt;/big&gt;&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                                <property name="wrap">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkHBox" id="hbox5">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image3">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="stock">gtk-apply</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">11</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label4">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Apply the effect&lt;/big&gt;&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
                             <property name="padding">5</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
+                        <child>
+                          <widget class="GtkHBox" id="hbox10">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image2">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="stock">gtk-new</property>
+                                <property name="icon_size">5</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="padding">5</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label3">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;Create your own custom effects&lt;/big&gt;&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                                <property name="wrap">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
                         <property name="padding">5</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="SpeedHBox">
+                      <widget class="GtkAlignment" id="alignment1">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkVBox" id="NewHelpBox">
+                    <child>
+                      <widget class="GtkHBox" id="hbox9">
+                        <property name="visible">True</property>
                         <property name="spacing">5</property>
                         <child>
-                          <widget class="GtkCheckButton" id="SpeedCheckBox">
+                          <widget class="GtkImage" id="image8">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">Custom Speed</property>
-                            <property name="response_id">0</property>
-                            <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="on_SpeedCheckBox_toggled"/>
+                            <property name="xalign">1</property>
+                            <property name="stock">gtk-dialog-info</property>
+                            <property name="icon_size">6</property>
                           </widget>
-                          <packing>
-                            <property name="expand">False</property>
-                          </packing>
                         </child>
                         <child>
-                          <widget class="GtkHScale" id="Speed">
+                          <widget class="GtkLabel" id="label6">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="update_policy">GTK_UPDATE_DELAYED</property>
-                            <property name="adjustment">1 1 75 15 10 10</property>
-                            <property name="draw_value">False</property>
-                            <signal name="value_changed" handler="on_Speed_value_changed"/>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">&lt;b&gt;&lt;big&gt;&lt;big&gt;Adding a new effect&lt;/big&gt;&lt;/big&gt;&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
                           </packing>
                         </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label11">
+                        <property name="visible">True</property>
+                        <property name="yalign">0</property>
+                        <property name="label" translatable="yes">Type in a name and description for your new effect. Then choose a video or screensaver. You can set options for your effect such as opacity and speed, and test it on the desktop with Apply. Save your effect by clicking Add.</property>
+                        <property name="wrap">True</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFrame" id="frame2">
+                    <property name="height_request">120</property>
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
                     <child>
-                      <widget class="GtkCheckButton" id="CPUPriority">
+                      <widget class="GtkHBox" id="hbox11">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">Choose whether or not to be nice to other processes (nice -n 15)</property>
-                        <property name="label" translatable="yes">Run as low priority</property>
-                        <property name="response_id">0</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_CPUPriority_toggled"/>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="customHBox">
-                        <property name="visible">True</property>
-                        <property name="spacing">5</property>
                         <child>
-                          <widget class="GtkLabel" id="label12">
+                          <widget class="GtkTable" id="table5">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">Custom Arguments:</property>
+                            <property name="border_width">5</property>
+                            <property name="n_rows">3</property>
+                            <property name="n_columns">2</property>
+                            <property name="column_spacing">5</property>
+                            <property name="row_spacing">5</property>
+                            <child>
+                              <widget class="GtkLabel" id="InfoDescr">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="use_markup">True</property>
+                                <property name="wrap">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="y_options">GTK_FILL</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="InfoSet">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt; &lt;/b&gt;&lt;/big&gt;</property>
+                                <property name="use_markup">True</property>
+                                <property name="wrap">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="InfoName">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt; &lt;/b&gt;&lt;/big&gt;</property>
+                                <property name="use_markup">True</property>
+                                <property name="wrap">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="y_options">GTK_FILL</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label23">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Name:</property>
+                              </widget>
+                              <packing>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options">GTK_FILL</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label24">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Description:</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options">GTK_FILL</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label25">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Launch:</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options">GTK_FILL</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkHButtonBox" id="hbuttonbox5">
+                            <child>
+                              <widget class="GtkToggleButton" id="togglebutton1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="response_id">0</property>
+                                <child>
+                                  <widget class="GtkVBox" id="vbox2">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkImage" id="image11">
+                                        <property name="visible">True</property>
+                                        <property name="stock">gtk-no</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label20">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Run on startup</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkEntry" id="ArgLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="has_tooltip">True</property>
-                            <property name="tooltip" translatable="yes">Common options include "-speed #" and "-maxfps #". Consult the man pages of the effect for more details.</property>
-                            <signal name="changed" handler="on_ArgLabel_changed"/>
-                          </widget>
-                          <packing>
+                            <property name="padding">5</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label19">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Effect Information&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="position">3</property>
+                        <property name="type">label_item</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </widget>
@@ -651,7 +828,7 @@
         <child>
           <widget class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
-            <property name="spacing">10</property>
+            <property name="spacing">5</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <widget class="GtkButton" id="Close">
@@ -1005,6 +1182,7 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="skip_taskbar_hint">True</property>
     <child>
       <widget class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
