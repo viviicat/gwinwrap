@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Aug 29 02:26:45 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Aug 29 02:33:08 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
@@ -362,7 +362,6 @@
                       </widget>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="padding">5</property>
                         <property name="position">7</property>
                       </packing>
                     </child>
