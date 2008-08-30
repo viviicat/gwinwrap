@@ -73,7 +73,6 @@ class gwinwrap:
 		self.selectedEffect = ""
 		self.MakingNew = False
 		self.CancelPressed = False
-		self.UsingSaver = False
 		self.PresetSelectionProcess = False
 		self.ScreenSavers = []
 		self.OldName = ""
@@ -87,10 +86,10 @@ class gwinwrap:
 			, "on_SaverList_cursor_changed" : self.SaverListSelect
 			, "on_EffectsList_cursor_changed" : self.EffectsListSelect
 			, "on_Stop_clicked" : self.Stop
-			, "on_Speed_value_changed" : self.SpeedChange
+			, "on_Speed_value_changed" : self.OptionChange
 			, "on_Opacity_value_changed" : self.OptionChange
 			, "on_CPUPriority_toggled" : self.OptionChange
-			, "on_SpeedCheckBox_toggled" : self.SpeedCheckBox
+			, "on_SpeedCheckBox_toggled" : self.OptionChange
 			, "on_XscreensaverClose_clicked" : self.Quit
 			, "on_XwinwrapClose_clicked" : self.Quit
 			, "on_ArgLabel_changed" : self.OptionChange
@@ -107,6 +106,8 @@ class gwinwrap:
 			, "on_SSRadio_toggled" : self.SaverRadioToggled
 			, "on_Preferences_clicked" : self.PrefPane
 			, "on_ClosePrefs_clicked" : self.PrefPane
+			, "on_Loop_toggled" : self.OptionChange
+			, "on_Sound_toggled" : self.OptionChange
 		}		
 		self.gladeXML.signal_autoconnect(dic)
 
@@ -165,6 +166,10 @@ class gwinwrap:
 		self.InfoName = self.gladeXML.get_widget("InfoName")
 		self.InfoDescr = self.gladeXML.get_widget("InfoDescr")
 		self.InfoSet = self.gladeXML.get_widget("InfoSet")
+		self.MovieOptionsHBox = self.gladeXML.get_widget("MovieOptionsHBox")
+		self.Loop = self.gladeXML.get_widget("Loop")
+		self.Sound = self.gladeXML.get_widget("Sound")
+		self.StartupCombo = self.gladeXML.get_widget("StartupCombo")
 
 		# Enable RGBA colormap
 		self.gtk_screen = self.Main.get_screen()
@@ -193,6 +198,9 @@ class gwinwrap:
 
 		self.SetUpTreeView("effects")
 		self.SetUpTreeView("screensavers")
+
+		self.StartupCombo.set_model(self.EffectListstore)
+		self.StartupCombo.set_active(0)
 
 		# Express Mode
 		if startOptions.args:
@@ -235,7 +243,7 @@ class gwinwrap:
 			# FIXME: We should refresh the apply button now if an effect is ready.
 
 	def MovieRadioToggled(self,widget):
-		if self.MovieChooser.get_filename() and widget.get_active():
+		if widget.get_active() and self.MovieChooser.get_filename():
 			self.EffectSaveableCheck(None)
 			self.ChooseMovie(widget)
 
@@ -243,10 +251,6 @@ class gwinwrap:
 		if widget.get_active():
 			self.EffectSaveableCheck(None)
 			self.SaverListSelect(None)
-
-	def SpeedCheckBox(self,widget):
-		if not self.PresetSelectionProcess:
-			self.ShowPreview()
 
 	def ShowEdit(self,widget):
 		self.SaveEdit.show()
@@ -275,8 +279,9 @@ class gwinwrap:
 		else:
 			coreEffect = self.MovieChooser.get_filename()
 			
-		self.TempSettings = [self.EffectName.get_text(),self.EffectDescr.get_text(),self.UsingSaver,speed,coreEffect,
-				self.Opacity.get_value(),self.CPUPriority.get_active(),self.ArgLabel.get_text()]
+		self.TempSettings = [self.EffectName.get_text(),self.EffectDescr.get_text(),self.SSRadio.get_active(),speed,coreEffect,
+				self.Opacity.get_value(),self.CPUPriority.get_active(),self.ArgLabel.get_text(),self.Loop.get_active(),
+				self.Sound.get_active()]
 		if delold:
 			self.EffectManager(self.OldName,mode="remove")
 		self.EffectManager(mode="add")
@@ -289,7 +294,6 @@ class gwinwrap:
 		nameindex = sortednames.index(newname.lower())
 		self.EffectsListSelection.select_path(nameindex)
 		self.EffectsList.scroll_to_cell(nameindex,use_align=True)
-		print " * Updated settings."
 		self.CloseEditing()
 		self.OldName = ""
 
@@ -329,15 +333,12 @@ class gwinwrap:
 				return strippedfilename
 			else:
 				strippedfilename = moviefile[letterindex] + strippedfilename
-		print strippedfilename
 		return strippedfilename
 
 	def SetInfoSet(self):
 		string = ""
-		args = ""
-		cpu = ""
-		speedsetting = ""
 		select = True
+		
 
 		if self.SSRadio.get_active() and self.selectedSaver:
 			string = "\"%s\" screensaver"%self.selectedSaver
@@ -346,22 +347,38 @@ class gwinwrap:
 
 		else:
 			select = False
-			self.InfoSet.set_markup("<big><b> </b></big>")
+			self.InfoSet.set_markup("<b> </b>")
 
 		if select:
 			
 			if self.SpeedCheckBox.get_active():
 				speedsetting = ", custom speed ~%u"%self.Speed.get_value()
+			else: speedsetting = ""
 
 			if self.ArgLabel.get_text() != "":
 				args = ", custom options \"%s\""%self.ArgLabel.get_text()
+			else: args = ""
 		
 			if self.CPUPriority.get_active():
 				cpu = ", low CPU priority"
+			else: cpu = ""
 
-			string = string + " with %i%% opacity%s%s%s"%(self.Opacity.get_value(),speedsetting,cpu,args)
+			if self.MovieRadio.get_active():
+				if self.Loop.get_active():
+					loop = ", looping"
+				else: loop = ""
+	
+				if self.Sound.get_active():
+					sound = ", with sound"
+				else: sound = ""
 
-			self.InfoSet.set_markup("<big><b>%s</b></big>"%string)
+			else:
+				sound = ""
+				loop = ""
+
+			string = string + "%s%s, %i%% opacity%s%s%s"%(loop,sound,self.Opacity.get_value(),speedsetting,cpu,args)
+
+			self.InfoSet.set_markup("<b>%s</b>"%string)
 
 	def EffectSaveableCheck(self,widget):
 		if widget == self.EffectName:
@@ -400,6 +417,7 @@ class gwinwrap:
 
 	def ChooseMovie(self,widget):
 		if self.MovieChooser.get_filename():
+			self.MovieOptionsHBox.show()
 			self.EffectSaveableCheck(None)
 			self.SpeedHBox.hide()
 			self.MovieRadio.set_active(True)
@@ -419,6 +437,7 @@ class gwinwrap:
 			self.CleanUpPreview()
 			self.ResetSettings()
 			self.WelcomeBox.show()
+			self.Edit.set_sensitive(False)
 			self.GetSavedEffects()
 			
 
@@ -483,19 +502,19 @@ class gwinwrap:
 
 	def Stop(self, widget):
 		self.Stop.set_sensitive(False)
-		if self.is_selected(self.EffectsListSelection):
+		if self.is_selected(self.EffectsListSelection) or self.MovieFile:
 			self.Apply.set_sensitive(True)
 		self.Refresh.set_sensitive(False)
 		self.KillXwinwrap()
 
 	def SaverListSelect(self, widget):
-		'Get the new label, check if it s the same as the old, and if not change the preview and buttons accordingly. Also, check for speed now so we don t need to so frequently.'
+		'Get the new label, change the preview and buttons accordingly. Also, check for speed now so we don t need to so frequently.'
 		selectedRow, locInRow = self.SaverListSelection.get_selected()
 		if locInRow:
-
 			if widget != self.SSRadio or self.SSRadio.get_active():
 				if not self.SSRadio.get_active():
 					self.SSRadio.set_active(True)
+				self.MovieOptionsHBox.hide()
 				self.EffectSaveableCheck(widget)
 				self.selectedSaver = selectedRow.get_value(locInRow,0)
 				self.UsingSpeed, self.UsingFPS = self.UsingCheck()
@@ -532,10 +551,19 @@ class gwinwrap:
 
 	def OptionChange(self,widget):
 		'This is in order to save changes like opacity'
-		self.SetInfoSet()
+		if widget == self.SaverList:
+			self.SSRadio.set_active(True)
+
 		if self.is_selected(self.SaverListSelection) or self.movieSetAndChosen():
+			self.SetInfoSet()
 			self.Apply.set_sensitive(True)
 			self.SaveEdit.set_sensitive(True)
+			if widget in [self.Speed,self.SpeedCheckBox,self.Loop,self.Sound]:
+				if widget == self.Speed:
+					self.SpeedCheckBox.set_active(True)
+
+				if not self.PresetSelectionProcess:
+					self.ShowPreview()
 
 	def KillXwinwrap(self):
 		if self.xwinwrap_running():
@@ -551,13 +579,6 @@ class gwinwrap:
 		'Use which to determine if xwinwrap is installed'
 		if subprocess.call(['which',app], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0:
 			return True
-
-	def SpeedChange(self, widget):
-		'Checks the option to customize speed when the speed is changed from the slider'
-		self.SpeedCheckBox.set_active(True)
-		self.OptionChange(widget)
-		if not self.PresetSelectionProcess:
-			self.ShowPreview()
 
 	def UsingCheck(self):
 		'Check the selected screensaver for an option by reading its --help output'
@@ -620,8 +641,7 @@ class gwinwrap:
 			self.EffectListstore.set_sort_column_id(0,gtk.SORT_ASCENDING)
 
 	def EffectManager(self,name=None,mode="add"):
-		'Returns a list of all the settings of a given custom effect name, adds settings, or removes settings.'				
-		
+		'Adds settings, or removes settings.'				
 		if mode == "remove":
 			self.settingLists.pop(self.EffectNameList(name))
 		
@@ -639,8 +659,6 @@ class gwinwrap:
 		pickleWrite = open(picklefile,"w")
 		pickle.dump(dump,pickleWrite)
 		pickleWrite.close()
-		print " * The %s have been saved to %s." %(mode,picklefile)
-		return
 
 	def ReadFromDisk(self,mode="presets"):
 		if mode == "presets":
@@ -655,7 +673,9 @@ class gwinwrap:
 
 			if mode == "presets":
 				returnableitems = []
+
 				# Make sure all effects use installed savers or are movies
+
 				# FIXME: This results in effects with uninstalled screensavers or incorrect filepaths getting deleted from the pickle. 
 				# It might be better to just ignore them.
 				for index in range(len(readitems)):
@@ -690,16 +710,9 @@ class gwinwrap:
 		selectedRow, locInRow = self.EffectsListSelection.get_selected()
 		if locInRow:
 			if selectedRow.get_value(locInRow,0) != self.selectedEffect or self.CancelPressed:
-				self.PresetSelectionProcess = True
-				listDescribe = ["Name:","Description:","Using a screensaver:","Screensaver Speed:",
-						"Filepath/Screensaver Name:","Opacity:","Using low CPU priority:","Additional arguments:"]
-				print "\n" + "="*40
-				for item in range(0,len(listDescribe)):
-					print listDescribe[item],self.settingLists[self.EffectNameList(selectedRow.get_value(locInRow,0))][item]
-				print "="*40 + "\n"
-			
+				self.PresetSelectionProcess = True	
+		
 				self.CancelPressed = False
-
 				self.Remove.set_sensitive(True)
 				self.Edit.set_sensitive(True)
 				self.selectedEffect = selectedRow.get_value(locInRow,0)
@@ -729,7 +742,8 @@ class gwinwrap:
 		self.OldName = ""
 		self.InfoName.set_markup("<big><b> </b></big>")
 		self.InfoDescr.set_text("")
-		self.InfoSet.set_markup("<big><b> </b></big>")
+		self.InfoSet.set_markup("<b> </b>")
+		self.MovieOptionsHBox.show()
 
 	def SetSettings(self,name):
 		self.ResetSettings()
@@ -740,15 +754,14 @@ class gwinwrap:
 
 		if settingslist[2]:
 		# If using a screensaver
-			self.UsingSaver = True
+			self.SSRadio.set_active(True)
 			self.selectedSaver = settingslist[4]
 			self.UsingSpeed,self.UsingFPS = self.UsingCheck()
-			self.SSRadio.set_active(True)
 			saverid = self.ScreenSavers.index(settingslist[4])
 			self.SaverListSelection.select_path(saverid)
 			self.SaverList.scroll_to_cell(saverid,use_align=True)
+			self.MovieOptionsHBox.hide()
 		else:
-			self.UsingSaver = False
 			self.MovieFile = settingslist[4]
 			self.MovieChooser.set_filename(self.MovieFile)
 			self.MovieRadio.set_active(True)
@@ -759,7 +772,12 @@ class gwinwrap:
 
 		if not settingslist[6]:
 		# If the priority setting is not on
-			self.CPUPriority.set_active(True)
+			self.CPUPriority.set_active(False)
+
+		# Set looping
+		self.Loop.set_active(settingslist[8])
+		# Set sound
+		self.Sound.set_active(settingslist[9])
 		
 		# Set any saved arguments
 		self.ArgLabel.set_text(settingslist[7])
@@ -849,8 +867,11 @@ class gwinwrap:
 				command = self.nice + command
 
 		elif mode == "movie":
-			baseMovieCommand = "mplayer"
-			self.Command = [baseMovieCommand,"%s"%self.MovieFile,"-quiet"]
+			self.Command = ["mplayer","%s"%self.MovieFile,"-quiet"]
+			if self.Loop.get_active():
+				self.Command = self.Command + ["-loop","0"]
+			if not self.Sound.get_active():
+				self.Command.append("-nosound")
 			command = self.Command + ["-wid","%i"%self.Socket.window.xid]
 
 		elif mode == "all":

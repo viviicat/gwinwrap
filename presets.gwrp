@@ -12,6 +12,8 @@ aF100.0
 aI01
 aS''
 p5
+aI01
+aI00
 aa(lp6
 S'Blocktube'
 p7
@@ -24,6 +26,8 @@ p9
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp10
 S'Deco'
 p11
@@ -36,6 +40,8 @@ p13
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp14
 S'FuzzyFlakes'
 p15
@@ -48,6 +54,8 @@ p17
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp18
 S'Lockward'
 p19
@@ -60,6 +68,8 @@ p21
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp22
 S'MatrixView'
 p23
@@ -72,6 +82,8 @@ p25
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp26
 S'Molecule'
 p27
@@ -84,6 +96,8 @@ p29
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp30
 S'Noof'
 p31
@@ -96,6 +110,8 @@ p33
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp34
 S'Penrose'
 p35
@@ -108,6 +124,8 @@ p37
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp38
 S'PopSquares'
 p39
@@ -120,6 +138,8 @@ p41
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp42
 S'Ripples'
 p43
@@ -132,6 +152,8 @@ p45
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp46
 S'SkyRocket'
 p47
@@ -144,6 +166,8 @@ p49
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp50
 S'GLMatrix'
 p51
@@ -156,6 +180,8 @@ p53
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp54
 S'Voronoi'
 p55
@@ -168,6 +194,8 @@ p57
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp58
 S'Euphoria'
 p59
@@ -180,6 +208,8 @@ p61
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp62
 S'Helios'
 p63
@@ -192,6 +222,8 @@ p65
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp66
 S'Lattice'
 p67
@@ -204,6 +236,8 @@ p69
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp70
 S'Hyperspace'
 p71
@@ -216,76 +250,90 @@ p73
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp74
-S'FieldLines'
+S'CWaves'
 p75
-aS'colored lines'
+aS'smooth horizontalness'
 p76
 aI01
 aI0
-aS'fieldlines'
+aS'cwaves'
 p77
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp78
-S'CWaves'
+S'XMatrix'
 p79
-aS'smooth horizontalness'
+aS'the ultimate geek dream desktop'
 p80
 aI01
 aI0
-aS'cwaves'
+aS'xmatrix'
 p81
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp82
-S'XMatrix'
+S'Flocks'
 p83
-aS'the ultimate geek dream desktop'
+aS'are they fish or triangles?'
 p84
 aI01
 aI0
-aS'xmatrix'
+aS'flocks'
 p85
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa(lp86
-S'Flocks'
-p87
-aS'are they fish or triangles?'
-p88
-aI01
-aI0
-aS'flocks'
-p89
-aF100.0
-aI01
-ag5
-aa(lp90
 S'Cool Plasma'
-p91
+p87
 aS'plasma with a slow setting'
-p92
+p88
 aI01
 aF2.2000000000000002
 aS'plasma'
-p93
+p89
 aF50.0
 aI01
 ag5
-aa(lp94
+aI01
+aI00
+aa(lp90
 S'Circuit'
-p95
+p91
 aS'for the geek in all of us'
-p96
+p92
 aI01
 aI0
 aS'circuit'
+p93
+aF100.0
+aI01
+ag5
+aI01
+aI00
+aa(lp94
+S'FieldLines'
+p95
+aS'colored lines'
+p96
+aI01
+aI0
+aS'fieldlines'
 p97
 aF100.0
 aI01
 ag5
+aI01
+aI00
 aa.
