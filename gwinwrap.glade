@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Aug 30 01:06:27 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Aug 30 01:38:14 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
@@ -247,7 +247,6 @@
                             </child>
                             <child>
                               <widget class="GtkHBox" id="MovieOptionsHBox">
-                                <property name="visible">True</property>
                                 <child>
                                   <widget class="GtkCheckButton" id="Loop">
                                     <property name="visible">True</property>

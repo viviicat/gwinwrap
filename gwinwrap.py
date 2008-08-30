@@ -189,7 +189,7 @@ class gwinwrap:
 		if self.xwinwrap_running():
 			self.Stop.set_sensitive(True)
 			if startOptions.options.stop:
-				self.KillXwinwrap()
+				self.KillAll()
 				if not startOptions.args and not startOptions.options.window:
 					quit()
 		if startOptions.options.stop == True and not startOptions.args and not startOptions.options.window:
@@ -483,7 +483,7 @@ class gwinwrap:
 		self.RunEffect()		
 
 	def RunEffect(self):
-		self.KillXwinwrap()
+		self.KillAll()
 		if self.MovieRadio.get_active():
 			self.CleanUpPreview()
 		cmd = ""
@@ -505,7 +505,7 @@ class gwinwrap:
 		if self.is_selected(self.EffectsListSelection) or self.MovieFile:
 			self.Apply.set_sensitive(True)
 		self.Refresh.set_sensitive(False)
-		self.KillXwinwrap()
+		self.KillAll()
 
 	def SaverListSelect(self, widget):
 		'Get the new label, change the preview and buttons accordingly. Also, check for speed now so we don t need to so frequently.'
@@ -565,10 +565,10 @@ class gwinwrap:
 				if not self.PresetSelectionProcess:
 					self.ShowPreview()
 
-	def KillXwinwrap(self):
+	def KillAll(self,item="xwinwrap"):
 		if self.xwinwrap_running():
-			print " * GWINWRAP ** Killing current xwinwrap process."
-			self.Run(["killall","xwinwrap"])
+			print " * GWINWRAP ** Killing current %s process."%item
+			self.Run(["killall",item])
 
 	def xwinwrap_running(self):
 		'Use pidof and pgrep to determine if xwinwrap is running'
@@ -743,7 +743,7 @@ class gwinwrap:
 		self.InfoName.set_markup("<big><b> </b></big>")
 		self.InfoDescr.set_text("")
 		self.InfoSet.set_markup("<b> </b>")
-		self.MovieOptionsHBox.show()
+		self.MovieOptionsHBox.hide()
 
 	def SetSettings(self,name):
 		self.ResetSettings()
@@ -867,7 +867,7 @@ class gwinwrap:
 				command = self.nice + command
 
 		elif mode == "movie":
-			self.Command = ["mplayer","%s"%self.MovieFile,"-quiet"]
+			self.Command = ["mplayer","%s"%self.MovieFile,"-quiet","-noconsolecontrols"]
 			if self.Loop.get_active():
 				self.Command = self.Command + ["-loop","0"]
 			if not self.Sound.get_active():
