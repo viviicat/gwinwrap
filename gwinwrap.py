@@ -235,12 +235,16 @@ class gwinwrap:
 
 	def UpdateStartup(self):
 		if self.startupeffect:
+			self.SettingStartup = True
 			sortedlist = self.EffectNameList()
 			newlist = []
 			for name in sortedlist:
 				newlist.append(name.lower())
 			newlist.sort()
 			self.StartupCombo.set_active(newlist.index(self.startupeffect.lower()))
+		else:
+			self.StartupCombo.set_active(0)
+			self.StartupCheckBox.set_active(False)
 
 	def SetPrefCheckBoxes(self):
 		for pref in self.PrefButtonID:
@@ -264,8 +268,9 @@ class gwinwrap:
 				self.DesktopEntry("remove")
 
 	def CheckStartupBox(self,widget):
-		if widget.get_active() != -1:
+		if widget == self.StartupCombo:
 			self.StartupCheckBox.set_active(True)
+			self.SettingStartup = False
 		else:
 			self.StartupCheckBox.set_active(False)
 
@@ -736,10 +741,13 @@ class gwinwrap:
 				return None
 
 		elif mode == "remove":
+			removed = False
 			for onefile in twofiles:
 				if os.path.exists(onefile):
+					removed = True
 					os.remove(onefile)
-			print " * GWINWRAP ** Removed desktop entry and bash script."
+			if removed:
+				print " * GWINWRAP ** Removed desktop entry and bash script."
 
 
 	def SaveToDisk(self, mode="presets"):
