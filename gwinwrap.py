@@ -58,6 +58,8 @@ class gwinwrap:
 		self.nice = ["nice","-n","15"]
 		# Pickle files
 		self.pickle = ["presets.gwrp","prefs.gwrp"]
+		# Startup items directory
+		self.startupDir = "/.config/autostart/"
 		### END AJUSTABLE VARIABLES ###
 
 		self.settingLists = self.ReadFromDisk()
@@ -108,6 +110,7 @@ class gwinwrap:
 			, "on_ClosePrefs_clicked" : self.PrefPane
 			, "on_Loop_toggled" : self.OptionChange
 			, "on_Sound_toggled" : self.OptionChange
+			, "on_StartupCombo_changed" : self.CheckStartupBox
 		}		
 		self.gladeXML.signal_autoconnect(dic)
 
@@ -170,6 +173,7 @@ class gwinwrap:
 		self.Loop = self.gladeXML.get_widget("Loop")
 		self.Sound = self.gladeXML.get_widget("Sound")
 		self.StartupCombo = self.gladeXML.get_widget("StartupCombo")
+		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
 
 		# Enable RGBA colormap
 		self.gtk_screen = self.Main.get_screen()
@@ -200,7 +204,15 @@ class gwinwrap:
 		self.SetUpTreeView("screensavers")
 
 		self.StartupCombo.set_model(self.EffectListstore)
-		self.StartupCombo.set_active(0)
+
+		startupeffect = self.DesktopEntry()
+		if startupeffect:
+			sortedlist = self.EffectNameList()
+			newlist = []
+			for name in sortedlist:
+				newlist.append(name.lower())
+			newlist.sort()
+			self.StartupCombo.set_active(newlist.index(startupeffect.lower()))
 
 		# Express Mode
 		if startOptions.args:
@@ -241,6 +253,15 @@ class gwinwrap:
 				if pref.get_active():
 					self.PrefCommand = self.PrefCommand + [self.PrefButtonID[pref]]
 			# FIXME: We should refresh the apply button now if an effect is ready.
+
+			if self.StartupCheckBox.get_active():
+				self.DesktopEntry("write",self.StartupCombo.get_active_text())
+
+			else:
+				self.DesktopEntry("remove")
+
+	def CheckStartupBox(self,widget):
+		self.StartupCheckBox.set_active(True)
 
 	def MovieRadioToggled(self,widget):
 		if widget.get_active() and self.MovieChooser.get_filename():
@@ -394,7 +415,12 @@ class gwinwrap:
 		DupeShowing = False
 		if not self.PresetSelectionProcess:
 			self.SetInfoSet()
-			if self.EffectName.get_text() in self.EffectNameList() and self.EffectName.get_text() != self.OldName:
+
+			lowerlist = []
+			for name in self.EffectNameList():
+				lowerlist.append(name.lower())
+
+			if self.EffectName.get_text().lower() in lowerlist and self.EffectName.get_text() != self.OldName:
 				self.DuplicateWarning.show()
 				DupeShowing = True
 			else:
@@ -647,6 +673,61 @@ class gwinwrap:
 		
 		if mode == "add":
 			self.settingLists = self.settingLists + [self.TempSettings]
+
+	def DesktopEntry(self,mode="read",effect=None):
+		'Adds a desktop entry in [home]/.config/autostart/ linking to a bash script in the gwinwrap directory...'
+		# FIXME: this is probably not the best way to do it. The bash script changes directories so that gwinwrap
+		# knows where the gladefile is.
+
+		gwrpdir = os.getcwd()
+		home = os.getenv("HOME")
+		twofiles = ["%s/startup"%gwrpdir,"%s%sgwinwrap.desktop"%(home,self.startupDir)]
+
+		if mode == "write":		
+			for onefile in twofiles:
+				if os.path.exists(onefile):
+					os.remove(onefile)
+
+			bashstring = "#!/bin/bash\ncd %s\n./gwinwrap.py \"%s\""%(gwrpdir,effect)
+	
+			write = open(twofiles[0], "w")
+			write.write(bashstring)
+			write.close()
+
+			self.Run(["chmod","+x","%s/startup"%gwrpdir])
+
+			desktopstring = "\n[Desktop Entry]\nType=Application\nEncoding=UTF-8\nVersion=1.0\nName=Gwinwrap Startup\nName[en_US]=Gwinwrap Startup\nComment[en_US]=Required for effect auto-start.\nComment=Required for effect auto-start.\nExec=%s/startup\nX-Gnome-Autostart-enabled=true"%gwrpdir
+
+			write = open(twofiles[1],"w")
+			write.write(desktopstring)
+			write.close()
+
+		elif mode == "read":
+			if os.path.exists(twofiles[0]) and os.path.exists(twofiles[1]):
+				read = open(twofiles[0],"r")
+				bashstring = read.read()
+				counter = -1
+				for letter in bashstring:
+					counter = counter + 1
+					if letter == "\"":
+						return string.strip(bashstring[counter:],"\"\n")
+
+
+			elif os.path.exists(twofiles[0]):
+				os.remove(twofiles[0])
+				return None
+
+			elif os.path.exists(twofiles[1]):
+				os.remove(twofiles[1])
+				return None
+			else:
+				return None
+
+		elif mode == "remove":
+			for onefile in twofiles:
+				if os.path.exists(onefile):
+					os.remove(onefile)
+
 
 	def SaveToDisk(self, mode="presets"):
 		if mode == "presets":
