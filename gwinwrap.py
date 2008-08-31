@@ -691,7 +691,7 @@ class gwinwrap:
 		home = os.getenv("HOME")
 		twofiles = ["%s/startup"%gwrpdir,"%s%sgwinwrap.desktop"%(home,self.startupDir)]
 
-		if mode == "write":		
+		if mode == "write":
 			for onefile in twofiles:
 				if os.path.exists(onefile):
 					os.remove(onefile)
@@ -711,6 +711,8 @@ class gwinwrap:
 			write.close()
 
 			self.startupeffect = effect
+
+			print " * GWINWRAP ** Created a bash script in %s and added a desktop entry to %s which launches it. The effect \"%s\" will now start at login."%(gwrpdir,self.startupDir,effect)
 
 		elif mode == "read":
 			if os.path.exists(twofiles[0]) and os.path.exists(twofiles[1]):
@@ -737,6 +739,7 @@ class gwinwrap:
 			for onefile in twofiles:
 				if os.path.exists(onefile):
 					os.remove(onefile)
+			print " * GWINWRAP ** Removed desktop entry and bash script."
 
 
 	def SaveToDisk(self, mode="presets"):
