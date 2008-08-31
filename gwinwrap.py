@@ -953,7 +953,9 @@ class gwinwrap:
 				self.Command = self.Command + ["-loop","0"]
 			if not self.Sound.get_active():
 				self.Command.append("-nosound")
-			command = self.Command + ["-wid","%i"%self.Socket.window.xid]
+
+			if not express:
+				command = self.Command + ["-wid","%i"%self.Socket.window.xid]
 
 		elif mode == "all":
 			command = baseCommand + ["1","--","%s%s"%(self.XSSDir,self.selectedSaver),"-window-id","WID"] 
