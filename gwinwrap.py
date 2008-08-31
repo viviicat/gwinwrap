@@ -205,14 +205,9 @@ class gwinwrap:
 
 		self.StartupCombo.set_model(self.EffectListstore)
 
-		startupeffect = self.DesktopEntry()
-		if startupeffect:
-			sortedlist = self.EffectNameList()
-			newlist = []
-			for name in sortedlist:
-				newlist.append(name.lower())
-			newlist.sort()
-			self.StartupCombo.set_active(newlist.index(startupeffect.lower()))
+		self.startupeffect = self.DesktopEntry()
+
+		self.UpdateStartup()
 
 		# Express Mode
 		if startOptions.args:
@@ -238,6 +233,15 @@ class gwinwrap:
 
 		self.Main.show()
 
+	def UpdateStartup(self):
+		if self.startupeffect:
+			sortedlist = self.EffectNameList()
+			newlist = []
+			for name in sortedlist:
+				newlist.append(name.lower())
+			newlist.sort()
+			self.StartupCombo.set_active(newlist.index(self.startupeffect.lower()))
+
 	def SetPrefCheckBoxes(self):
 		for pref in self.PrefButtonID:
 			if self.PrefButtonID[pref] in self.PrefCommand:
@@ -256,12 +260,14 @@ class gwinwrap:
 
 			if self.StartupCheckBox.get_active():
 				self.DesktopEntry("write",self.StartupCombo.get_active_text())
-
 			else:
 				self.DesktopEntry("remove")
 
 	def CheckStartupBox(self,widget):
-		self.StartupCheckBox.set_active(True)
+		if widget.get_active() != -1:
+			self.StartupCheckBox.set_active(True)
+		else:
+			self.StartupCheckBox.set_active(False)
 
 	def MovieRadioToggled(self,widget):
 		if widget.get_active() and self.MovieChooser.get_filename():
@@ -316,6 +322,7 @@ class gwinwrap:
 		self.EffectsListSelection.select_path(nameindex)
 		self.EffectsList.scroll_to_cell(nameindex,use_align=True)
 		self.CloseEditing()
+		self.UpdateStartup()
 		self.OldName = ""
 
 	def ShowNew(self,widget):
@@ -465,6 +472,7 @@ class gwinwrap:
 			self.WelcomeBox.show()
 			self.Edit.set_sensitive(False)
 			self.GetSavedEffects()
+			self.UpdateStartup()
 			
 
 	def InitializeChoosers(self):
@@ -701,6 +709,8 @@ class gwinwrap:
 			write = open(twofiles[1],"w")
 			write.write(desktopstring)
 			write.close()
+
+			self.startupeffect = effect
 
 		elif mode == "read":
 			if os.path.exists(twofiles[0]) and os.path.exists(twofiles[1]):

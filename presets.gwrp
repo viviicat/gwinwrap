@@ -183,13 +183,13 @@ ag5
 aI01
 aI00
 aa(lp54
-S'Voronoi'
+S'Euphoria'
 p55
-aS'stars and shapes'
+aS'slow euphoria'
 p56
 aI01
-aI0
-aS'voronoi'
+aF2.7777777777777777
+aS'euphoria'
 p57
 aF100.0
 aI01
@@ -197,13 +197,13 @@ ag5
 aI01
 aI00
 aa(lp58
-S'Euphoria'
+S'Helios'
 p59
-aS'slow euphoria'
+aS'bubbly thingies'
 p60
 aI01
-aF2.7777777777777777
-aS'euphoria'
+aI0
+aS'helios'
 p61
 aF100.0
 aI01
@@ -211,13 +211,13 @@ ag5
 aI01
 aI00
 aa(lp62
-S'Helios'
+S'Lattice'
 p63
-aS'bubbly thingies'
+aS'chains or donuts or something...'
 p64
 aI01
 aI0
-aS'helios'
+aS'lattice'
 p65
 aF100.0
 aI01
@@ -225,13 +225,13 @@ ag5
 aI01
 aI00
 aa(lp66
-S'Lattice'
+S'Hyperspace'
 p67
-aS'chains or donuts or something...'
+aS'where are we?'
 p68
 aI01
 aI0
-aS'lattice'
+aS'hyperspace'
 p69
 aF100.0
 aI01
@@ -239,13 +239,13 @@ ag5
 aI01
 aI00
 aa(lp70
-S'Hyperspace'
+S'CWaves'
 p71
-aS'where are we?'
+aS'smooth horizontalness'
 p72
 aI01
 aI0
-aS'hyperspace'
+aS'cwaves'
 p73
 aF100.0
 aI01
@@ -253,13 +253,13 @@ ag5
 aI01
 aI00
 aa(lp74
-S'CWaves'
+S'XMatrix'
 p75
-aS'smooth horizontalness'
+aS'the ultimate geek dream desktop'
 p76
 aI01
 aI0
-aS'cwaves'
+aS'xmatrix'
 p77
 aF100.0
 aI01
@@ -267,13 +267,13 @@ ag5
 aI01
 aI00
 aa(lp78
-S'XMatrix'
+S'Flocks'
 p79
-aS'the ultimate geek dream desktop'
+aS'are they fish or triangles?'
 p80
 aI01
 aI0
-aS'xmatrix'
+aS'flocks'
 p81
 aF100.0
 aI01
@@ -281,41 +281,41 @@ ag5
 aI01
 aI00
 aa(lp82
-S'Flocks'
-p83
-aS'are they fish or triangles?'
-p84
-aI01
-aI0
-aS'flocks'
-p85
-aF100.0
-aI01
-ag5
-aI01
-aI00
-aa(lp86
 S'Cool Plasma'
-p87
+p83
 aS'plasma with a slow setting'
-p88
+p84
 aI01
 aF2.2000000000000002
 aS'plasma'
-p89
+p85
 aF50.0
 aI01
 ag5
 aI01
 aI00
-aa(lp90
+aa(lp86
 S'Circuit'
-p91
+p87
 aS'for the geek in all of us'
-p92
+p88
 aI01
 aI0
 aS'circuit'
+p89
+aF100.0
+aI01
+ag5
+aI01
+aI00
+aa(lp90
+S'FieldLines'
+p91
+aS'colored lines'
+p92
+aI01
+aI0
+aS'fieldlines'
 p93
 aF100.0
 aI01
@@ -323,28 +323,14 @@ ag5
 aI01
 aI00
 aa(lp94
-S'FieldLines'
+S'Voronoi'
 p95
-aS'colored lines'
+aS'stars and shapes'
 p96
 aI01
 aI0
-aS'fieldlines'
+aS'voronoi'
 p97
-aF100.0
-aI01
-ag5
-aI01
-aI00
-aa(lp98
-S'bunny'
-p99
-aS'test'
-p100
-aI00
-aI0
-aS'/home/gavin/bigbuckbunny_trailer_1080p.mov'
-p101
 aF100.0
 aI01
 ag5
