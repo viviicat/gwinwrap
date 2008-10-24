@@ -45,6 +45,8 @@ class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
 	def __init__(self):
+		print "\n[ Gavin Langdon's GWINWRAP -- Keep it Simple Stupid! ]"
+
 		# TODO: Add a filechooserbutton to choose a custom directory?
 		if os.path.isdir("/usr/libexec/xscreensaver/"):
 			self.XSSDir = "/usr/libexec/xscreensaver/" 
@@ -62,10 +64,12 @@ class gwinwrap:
 		self.startupDir = "/.config/autostart/"
 		### END AJUSTABLE VARIABLES ###
 
+		print " * Loading Presets..."
 		self.settingLists = self.ReadFromDisk()
 		self.PrefCommand = self.ReadFromDisk("preferences")
 
 		# Set the Glade file
+		print " * Setting up GUI..."
 		self.gladefile = "gwinwrap.glade"
 		self.gladeXML = gtk.glade.XML(self.gladefile)
 
@@ -124,6 +128,7 @@ class gwinwrap:
 		self.gladeXML.signal_autoconnect(dic)
 
 		# Check for Xwinwrap
+		print " * Checking for Xwinwrap and MPlayer..."
 		if not self.is_installed("xwinwrap"):
 			self.NoXwinwrap.show()
 			print " ** You don't have Xwinwrap installed!"
@@ -191,6 +196,7 @@ class gwinwrap:
 		self.StartupCombo = self.gladeXML.get_widget("StartupCombo")
 		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
 
+
 		# Enable RGBA colormap
 		# > This is so that we have transparent windows. We need to check so we don't
 		# crash if the theme doesn't support it.
@@ -202,6 +208,7 @@ class gwinwrap:
 		gtk.widget_set_default_colormap(self.colormap)
 
 
+		print " * Loading global preferences..."
 		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",
 					self.fullscreen:"-fs",self.skiptaskbar:"-st",
 					self.skippager:"-sp",self.above:"-a",self.below:"-b",
@@ -218,7 +225,7 @@ class gwinwrap:
 				if not startOptions.args and not startOptions.options.window:
 					quit()
 		if startOptions.options.stop == True and not startOptions.args and not startOptions.options.window:
-			print "No need to stop anything, nothing's running.\n"
+			print " * No need to stop anything, nothing's running.\n"
 			quit()
 
 		self.SetUpTreeView("effects")
@@ -252,7 +259,9 @@ class gwinwrap:
 				quit()
 
 		self.SetPrefCheckBoxes()
+		self.ShantzCheck()
 
+		print " * Showing Main window..."
 		self.Main.show()
 
 	def UpdateStartup(self):
@@ -316,6 +325,7 @@ class gwinwrap:
 			self.CleanUpPreview()
 
 		if widget == self.New:
+			self.Preview.hide()
 			self.Add.show()
 			self.SaveEdit.hide()
 			self.ResetSettings()
@@ -658,6 +668,19 @@ class gwinwrap:
 		else: maxfps = False
 
 		return speed,maxfps
+
+	def ShantzCheck(self):
+		#FIXME: Move to UsingCheck (I'm lazy)
+		helpfile = subprocess.Popen(["xwinwrap","--help"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()[0]
+		if string.find(helpfile,"-ov") >= 0:
+			self.overrideredirect.set_sensitive(True)
+		else:
+			print " * Gwinwrap suggests installing Shantz Xwinwrap for a better experience."
+			if self.overrideredirect.get_active():
+				self.overrideredirect.set_active(False)
+				self.PrefPane(None)
+			
+
 
 	def SetUpSpeedList(self):
 		'Custom values in order to make the speed-affected screensavers slower. Roughly merges the --maxfps option with the --speed option.'
