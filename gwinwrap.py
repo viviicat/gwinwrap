@@ -83,33 +83,42 @@ class gwinwrap:
 		# Create our dictionary and connect it
 		dic = {"on_Main_destroy" : self.Quit
 			, "on_Close_clicked" : self.Quit 
+
 			, "on_Apply_clicked" : self.Apply
 			, "on_Refresh_clicked" : self.Refresh
 			, "on_SaverList_cursor_changed" : self.SaverListSelect
 			, "on_EffectsList_cursor_changed" : self.EffectsListSelect
 			, "on_Stop_clicked" : self.Stop
+
 			, "on_Speed_value_changed" : self.OptionChange
 			, "on_Opacity_value_changed" : self.OptionChange
 			, "on_CPUPriority_toggled" : self.OptionChange
 			, "on_SpeedCheckBox_toggled" : self.OptionChange
-			, "on_XscreensaverClose_clicked" : self.Quit
-			, "on_XwinwrapClose_clicked" : self.Quit
 			, "on_ArgLabel_changed" : self.OptionChange
-			, "on_Remove_clicked" : self.Remove
-			, "on_RemoveConfirm_response" : self.RemoveConfirmResponse
-			, "on_New_clicked" : self.ShowNew
-			, "on_Edit_clicked" : self.ShowEdit
-			, "on_CancelEdit_clicked" : self.Cancel
-			, "on_EffectName_changed" : self.EffectSaveableCheck
-			, "on_EffectDescr_changed" : self.EffectSaveableCheck
-			, "on_SaveEdit_clicked" : self.SaveEdit
-			, "on_Add_clicked" : self.Add
-			, "on_MovieRadio_toggled" : self.MovieRadioToggled
-			, "on_SSRadio_toggled" : self.SaverRadioToggled
-			, "on_Preferences_clicked" : self.PrefPane
-			, "on_ClosePrefs_clicked" : self.PrefPane
 			, "on_Loop_toggled" : self.OptionChange
 			, "on_Sound_toggled" : self.OptionChange
+
+			, "on_XscreensaverClose_clicked" : self.Quit
+			, "on_XwinwrapClose_clicked" : self.Quit
+
+			, "on_Remove_clicked" : self.Remove
+			, "on_RemoveConfirm_response" : self.RemoveConfirmResponse
+
+			, "on_New_clicked" : self.PaneChange
+			, "on_Edit_clicked" : self.PaneChange
+			, "on_CancelEdit_clicked" : self.PaneChange
+			, "on_SaveEdit_clicked" : self.PaneChange
+			, "on_Add_clicked" : self.PaneChange
+
+			, "on_EffectName_changed" : self.EffectSaveableCheck
+			, "on_EffectDescr_changed" : self.EffectSaveableCheck
+
+			, "on_MovieRadio_toggled" : self.MovieRadioToggled
+			, "on_SSRadio_toggled" : self.SaverRadioToggled
+
+			, "on_Preferences_clicked" : self.PrefPane
+			, "on_ClosePrefs_clicked" : self.PrefPane
+
 			, "on_StartupCombo_changed" : self.CheckStartupBox
 		}		
 		self.gladeXML.signal_autoconnect(dic)
@@ -124,7 +133,11 @@ class gwinwrap:
 			print " ** Disabling video support -- you don't have mplayer installed"
 
 		# Get the widgets we need
-		# FIXME: isn't there a better way to do this?
+		# > Explanation for those who don't understand glade:
+		# This is assigning the xml stuff that the program Glade creates
+		# to memory so that the program can interact with it. The string names
+		# come from the widget's name defined in Glade.
+
 		self.Main = self.gladeXML.get_widget("Main")
 		self.SpeedCheckBox = self.gladeXML.get_widget("SpeedCheckBox")
 		self.Speed = self.gladeXML.get_widget("Speed")
@@ -149,10 +162,12 @@ class gwinwrap:
 		self.MovieRadio = self.gladeXML.get_widget("MovieRadio")
 		self.SaveEdit = self.gladeXML.get_widget("SaveEdit")
 		self.Add = self.gladeXML.get_widget("Add")
+		self.New = self.gladeXML.get_widget("New")
+		self.CancelEdit = self.gladeXML.get_widget("CancelEdit")
 		self.EffectsList = self.gladeXML.get_widget("EffectsList")
 		self.EffectName = self.gladeXML.get_widget("EffectName")
 		self.NewHelpBox = self.gladeXML.get_widget("NewHelpBox")
-		self.Remove= self.gladeXML.get_widget("Remove")
+		self.Remove = self.gladeXML.get_widget("Remove")
 		self.EffectDescr = self.gladeXML.get_widget("EffectDescr")
 		self.Edit = self.gladeXML.get_widget("Edit")
 		self.DuplicateWarning = self.gladeXML.get_widget("DuplicateWarning")
@@ -176,6 +191,8 @@ class gwinwrap:
 		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
 
 		# Enable RGBA colormap
+		# > This is so that we have transparent windows. We need to check so we don't
+		# crash if the theme doesn't support it.
 		self.gtk_screen = self.Main.get_screen()
 		self.rgbcolormap = self.gtk_screen.get_rgb_colormap()
 		self.colormap = self.gtk_screen.get_rgba_colormap()
@@ -210,6 +227,7 @@ class gwinwrap:
 		self.UpdateStartup()
 
 		# Express Mode
+		#  > This is used to start the effect without the window opening (used for startup command, etc).
 		if startOptions.args:
 			if startOptions.args[0] in self.EffectNameList():
 				print " * GWINWRAP ** Express mode enabled, launching preset \"%s\" now."%startOptions.args[0]
@@ -284,21 +302,43 @@ class gwinwrap:
 			self.EffectSaveableCheck(None)
 			self.SaverListSelect(None)
 
-	def ShowEdit(self,widget):
-		self.SaveEdit.show()
-		self.Add.hide()
-		self.SaveEdit.set_sensitive(False)
-		self.ShowEditing()
-		# Save a copy of the label for identification later
-		self.OldName = self.EffectName.get_text()
+	def ShowEditing(self):
+                self.CustomFrame.hide()
+                self.EditFrame.show()
 
-	def Add(self,widget):
-		self.Save(delold=False)
 
-	def SaveEdit(self,widget):
-		self.Save()
+	def PaneChange(self,widget):
+		if widget == self.CancelEdit or widget == self.New:
+			self.CleanUpPreview()
 
-	def Save(self,delold=True):
+		if widget == self.New:
+			self.Add.show()
+			self.SaveEdit.hide()
+			self.ResetSettings()
+			self.NewHelpBox.show()
+
+		if widget == self.Edit:
+			self.SaveEdit.show()
+			self.Add.hide()
+			self.SaveEdit.set_sensitive(False)
+			# Save a copy of the label for identification later
+			self.OldName = self.EffectName.get_text()
+
+		if widget == self.CancelEdit:
+			self.CancelPressed = True
+			self.EffectsListSelect(widget)
+			self.CloseEditing()
+
+		if widget == self.SaveEdit:
+			self.Save()
+
+		if widget == self.Add:
+			self.Save(overwrite=False)
+
+		if widget == self.New or widget == self.Edit:
+			self.ShowEditing()
+
+	def Save(self,overwrite=True):
 		if not self.SpeedCheckBox.get_active():
 			speed = 0
 		else:
@@ -314,7 +354,7 @@ class gwinwrap:
 		self.TempSettings = [self.EffectName.get_text(),self.EffectDescr.get_text(),self.SSRadio.get_active(),speed,coreEffect,
 				self.Opacity.get_value(),self.CPUPriority.get_active(),self.ArgLabel.get_text(),self.Loop.get_active(),
 				self.Sound.get_active()]
-		if delold:
+		if overwrite:
 			self.EffectManager(self.OldName,mode="remove")
 		self.EffectManager(mode="add")
 		self.GetSavedEffects()
@@ -329,24 +369,6 @@ class gwinwrap:
 		self.CloseEditing()
 		self.UpdateStartup()
 		self.OldName = ""
-
-	def ShowNew(self,widget):
-		self.Add.show()
-		self.SaveEdit.hide()
-		self.ShowEditing()
-		self.ResetSettings()
-		self.CleanUpPreview()
-		self.NewHelpBox.show()
-
-	def ShowEditing(self):
-		self.CustomFrame.hide()
-		self.EditFrame.show()
-
-	def Cancel(self,widget):
-		self.CancelPressed = True
-		self.CleanUpPreview()
-		self.EffectsListSelect(widget)
-		self.CloseEditing()
 
 	def CloseEditing(self):
 		self.EditFrame.hide()
@@ -780,6 +802,7 @@ class gwinwrap:
 
 				# FIXME: This results in effects with uninstalled screensavers or incorrect filepaths getting deleted from the pickle. 
 				# It might be better to just ignore them.
+
 				for index in range(len(readitems)):
 					if self.is_saver(readitems[index][4]):
 						returnableitems = returnableitems + [readitems[index]]
@@ -986,7 +1009,7 @@ class gwinwrap:
 			
 
 	def Run(self,command):
-		'Launch quietly, and return the object for PID referencing'
+		'Launch quietly, and return the object for PID referencing so that we can kill it later'
 	#	signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 		popen_object = subprocess.Popen(command, stdout=open(os.devnull, 'w'),stderr=open(os.devnull,'w'))
 
