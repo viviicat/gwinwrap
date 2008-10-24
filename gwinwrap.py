@@ -123,16 +123,6 @@ class gwinwrap:
 		}		
 		self.gladeXML.signal_autoconnect(dic)
 
-		# Check for Xwinwrap
-		print " * Checking for Xwinwrap and MPlayer..."
-		if not self.is_installed("xwinwrap"):
-			self.NoXwinwrap.show()
-			print " ** You don't have Xwinwrap installed!"
-
-		if not self.is_installed("mplayer"):
-			self.MovieHBox.set_sensitive(False)
-			print " ** Disabling video support -- you don't have mplayer installed"
-
 		# Get the widgets we need
 		# > Explanation for those who don't understand glade:
 		# This is assigning the xml stuff that the program Glade creates
@@ -193,6 +183,19 @@ class gwinwrap:
 		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
 		self.TipBox = self.gladeXML.get_widget("TipBox")
 		self.TipTitle = self.gladeXML.get_widget("TipTitle")
+
+		# Check for Xwinwrap
+		print " * Checking for Xwinwrap and MPlayer..."
+		if not self.is_installed("xwinwrap"):
+			self.NoXwinwrap.show()
+			print " ** You don't have Xwinwrap installed!"
+
+		else:
+			self.ShantzCheck()
+
+		if not self.is_installed("mplayer"):
+			self.MovieHBox.set_sensitive(False)
+			print " ** Disabling video support -- you don't have mplayer installed"
 
 		# Enable RGBA colormap
 		# > This is so that we have transparent windows. We need to check so we don't
@@ -255,7 +258,6 @@ class gwinwrap:
 				quit()
 
 		self.SetPrefCheckBoxes()
-		self.ShantzCheck()
 
 		print " * Showing Main window..."
 		self.Main.show()	

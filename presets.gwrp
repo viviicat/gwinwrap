@@ -99,13 +99,13 @@ ag5
 aI01
 aI00
 aa(lp30
-S'Noof'
+S'Penrose'
 p31
-aS'swirling stars of color'
+aS'colored tiles'
 p32
 aI01
 aI0
-aS'noof'
+aS'penrose'
 p33
 aF100.0
 aI01
@@ -113,13 +113,13 @@ ag5
 aI01
 aI00
 aa(lp34
-S'Penrose'
+S'PopSquares'
 p35
-aS'colored tiles'
+aS'wonderful blue squares'
 p36
 aI01
 aI0
-aS'penrose'
+aS'popsquares'
 p37
 aF100.0
 aI01
@@ -127,13 +127,13 @@ ag5
 aI01
 aI00
 aa(lp38
-S'PopSquares'
+S'Ripples'
 p39
-aS'wonderful blue squares'
+aS'brown raindrops'
 p40
 aI01
 aI0
-aS'popsquares'
+aS'ripples'
 p41
 aF100.0
 aI01
@@ -141,13 +141,13 @@ ag5
 aI01
 aI00
 aa(lp42
-S'Ripples'
+S'SkyRocket'
 p43
-aS'brown raindrops'
+aS'launch your very own rocket!'
 p44
 aI01
 aI0
-aS'ripples'
+aS'skyrocket'
 p45
 aF100.0
 aI01
@@ -155,13 +155,13 @@ ag5
 aI01
 aI00
 aa(lp46
-S'SkyRocket'
+S'GLMatrix'
 p47
-aS'launch your very own rocket!'
+aS"it's the matrix!"
 p48
 aI01
 aI0
-aS'skyrocket'
+aS'glmatrix'
 p49
 aF100.0
 aI01
@@ -169,13 +169,13 @@ ag5
 aI01
 aI00
 aa(lp50
-S'GLMatrix'
+S'Euphoria'
 p51
-aS"it's the matrix!"
+aS'slow euphoria'
 p52
 aI01
-aI0
-aS'glmatrix'
+aF2.7777777777777777
+aS'euphoria'
 p53
 aF100.0
 aI01
@@ -183,13 +183,13 @@ ag5
 aI01
 aI00
 aa(lp54
-S'Euphoria'
+S'Helios'
 p55
-aS'slow euphoria'
+aS'bubbly thingies'
 p56
 aI01
-aF2.7777777777777777
-aS'euphoria'
+aI0
+aS'helios'
 p57
 aF100.0
 aI01
@@ -197,13 +197,13 @@ ag5
 aI01
 aI00
 aa(lp58
-S'Helios'
+S'Lattice'
 p59
-aS'bubbly thingies'
+aS'chains or donuts or something...'
 p60
 aI01
 aI0
-aS'helios'
+aS'lattice'
 p61
 aF100.0
 aI01
@@ -211,13 +211,13 @@ ag5
 aI01
 aI00
 aa(lp62
-S'Lattice'
+S'Hyperspace'
 p63
-aS'chains or donuts or something...'
+aS'where are we?'
 p64
 aI01
 aI0
-aS'lattice'
+aS'hyperspace'
 p65
 aF100.0
 aI01
@@ -225,13 +225,13 @@ ag5
 aI01
 aI00
 aa(lp66
-S'Hyperspace'
+S'CWaves'
 p67
-aS'where are we?'
+aS'smooth horizontalness'
 p68
 aI01
 aI0
-aS'hyperspace'
+aS'cwaves'
 p69
 aF100.0
 aI01
@@ -239,13 +239,13 @@ ag5
 aI01
 aI00
 aa(lp70
-S'CWaves'
+S'XMatrix'
 p71
-aS'smooth horizontalness'
+aS'the ultimate geek dream desktop'
 p72
 aI01
 aI0
-aS'cwaves'
+aS'xmatrix'
 p73
 aF100.0
 aI01
@@ -253,13 +253,13 @@ ag5
 aI01
 aI00
 aa(lp74
-S'XMatrix'
+S'Flocks'
 p75
-aS'the ultimate geek dream desktop'
+aS'are they fish or triangles?'
 p76
 aI01
 aI0
-aS'xmatrix'
+aS'flocks'
 p77
 aF100.0
 aI01
@@ -267,41 +267,41 @@ ag5
 aI01
 aI00
 aa(lp78
-S'Flocks'
-p79
-aS'are they fish or triangles?'
-p80
-aI01
-aI0
-aS'flocks'
-p81
-aF100.0
-aI01
-ag5
-aI01
-aI00
-aa(lp82
 S'Cool Plasma'
-p83
+p79
 aS'plasma with a slow setting'
-p84
+p80
 aI01
 aF2.2000000000000002
 aS'plasma'
-p85
+p81
 aF50.0
 aI01
 ag5
 aI01
 aI00
-aa(lp86
+aa(lp82
 S'Circuit'
-p87
+p83
 aS'for the geek in all of us'
-p88
+p84
 aI01
 aI0
 aS'circuit'
+p85
+aF100.0
+aI01
+ag5
+aI01
+aI00
+aa(lp86
+S'FieldLines'
+p87
+aS'colored lines'
+p88
+aI01
+aI0
+aS'fieldlines'
 p89
 aF100.0
 aI01
@@ -309,13 +309,13 @@ ag5
 aI01
 aI00
 aa(lp90
-S'FieldLines'
+S'Voronoi'
 p91
-aS'colored lines'
+aS'stars and shapes'
 p92
 aI01
 aI0
-aS'fieldlines'
+aS'voronoi'
 p93
 aF100.0
 aI01
@@ -323,15 +323,15 @@ ag5
 aI01
 aI00
 aa(lp94
-S'Voronoi'
+S'Noof'
 p95
-aS'stars and shapes'
+aS'swirling stars of color'
 p96
 aI01
 aI0
-aS'voronoi'
+aS'noof'
 p97
-aF100.0
+aF80.0
 aI01
 ag5
 aI01
