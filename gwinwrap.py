@@ -181,6 +181,7 @@ class gwinwrap:
 		self.skippager = self.gladeXML.get_widget("skippager")
 		self.above = self.gladeXML.get_widget("above")
 		self.below = self.gladeXML.get_widget("below")
+		self.overrideredirect = self.gladeXML.get_widget("overrideredirect")
 		self.InfoName = self.gladeXML.get_widget("InfoName")
 		self.InfoDescr = self.gladeXML.get_widget("InfoDescr")
 		self.InfoSet = self.gladeXML.get_widget("InfoSet")
@@ -201,8 +202,11 @@ class gwinwrap:
 		gtk.widget_set_default_colormap(self.colormap)
 
 
-		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",self.fullscreen:"-fs",self.skiptaskbar:"-st",
-					self.skippager:"-sp",self.above:"-a",self.below:"-b"}
+		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",
+					self.fullscreen:"-fs",self.skiptaskbar:"-st",
+					self.skippager:"-sp",self.above:"-a",self.below:"-b",
+					self.overrideredirect:"-ov"
+					}
 
 		self.InitializeChoosers()
 
