@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Oct 24 01:45:34 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Oct 24 16:49:18 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
     <property name="height_request">500</property>
     <property name="app_paintable">True</property>
     <property name="title" translatable="yes">Gwinwrap</property>
-    <property name="resizable">False</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <signal name="destroy" handler="on_Main_destroy"/>
     <child>
@@ -15,13 +14,15 @@
         <property name="visible">True</property>
         <property name="border_width">10</property>
         <child>
-          <widget class="GtkHBox" id="hbox1">
+          <widget class="GtkHPaned" id="hpaned1">
+            <property name="width_request">300</property>
             <property name="visible">True</property>
-            <property name="spacing">10</property>
+            <property name="can_focus">True</property>
             <child>
               <widget class="GtkVBox" id="vbox3">
                 <property name="width_request">300</property>
                 <property name="visible">True</property>
+                <property name="border_width">5</property>
                 <child>
                   <widget class="GtkVBox" id="EditFrame">
                     <child>
@@ -514,12 +515,14 @@ Videos</property>
                 </child>
               </widget>
               <packing>
-                <property name="expand">False</property>
+                <property name="resize">False</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
               <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
+                <property name="border_width">4</property>
                 <property name="spacing">5</property>
                 <child>
                   <widget class="GtkHBox" id="Preview">
@@ -536,12 +539,8 @@ Videos</property>
                     <property name="visible">True</property>
                     <property name="spacing">10</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox6">
+                      <widget class="GtkAlignment" id="alignment3">
                         <property name="visible">True</property>
-                        <property name="spacing">5</property>
-                        <child>
-                          <placeholder/>
-                        </child>
                         <child>
                           <placeholder/>
                         </child>
@@ -705,7 +704,6 @@ Videos</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="padding">5</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -759,7 +757,7 @@ Videos</property>
                               <widget class="GtkVBox" id="vbox9">
                                 <property name="visible">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label6">
+                                  <widget class="GtkLabel" id="TipTitle">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="ypad">10</property>
@@ -959,17 +957,53 @@ Videos</property>
                         <property name="column_spacing">5</property>
                         <property name="row_spacing">5</property>
                         <child>
-                          <widget class="GtkLabel" id="InfoDescr">
+                          <widget class="GtkLabel" id="label25">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Launch:</property>
+                          </widget>
+                          <packing>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="y_options">GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label24">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Description:</property>
+                          </widget>
+                          <packing>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="y_options">GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label23">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Name:</property>
+                          </widget>
+                          <packing>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="y_options">GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="InfoName">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
+                            <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt; &lt;/b&gt;&lt;/big&gt;</property>
                             <property name="use_markup">True</property>
                             <property name="wrap">True</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
-                            <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
                             <property name="y_options">GTK_FILL</property>
                           </packing>
                         </child>
@@ -989,53 +1023,17 @@ Videos</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="InfoName">
+                          <widget class="GtkLabel" id="InfoDescr">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt; &lt;/b&gt;&lt;/big&gt;</property>
                             <property name="use_markup">True</property>
                             <property name="wrap">True</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
-                            <property name="y_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label23">
-                            <property name="visible">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Name:</property>
-                          </widget>
-                          <packing>
-                            <property name="x_options">GTK_FILL</property>
-                            <property name="y_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label24">
-                            <property name="visible">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Description:</property>
-                          </widget>
-                          <packing>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
-                            <property name="x_options">GTK_FILL</property>
-                            <property name="y_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label25">
-                            <property name="visible">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Launch:</property>
-                          </widget>
-                          <packing>
-                            <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options">GTK_FILL</property>
                             <property name="y_options">GTK_FILL</property>
                           </packing>
                         </child>
@@ -1059,7 +1057,8 @@ Videos</property>
                 </child>
               </widget>
               <packing>
-                <property name="position">1</property>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
           </widget>
@@ -1180,22 +1179,11 @@ Videos</property>
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkLabel" id="label10">
+              <widget class="GtkImage" id="image6">
                 <property name="visible">True</property>
-                <property name="xpad">10</property>
-                <property name="label" translatable="yes">If you haven't already, please install some xscreensaver and/or gnome-screensaver packages and restart Gwinwrap to continue.
-
-Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreensaver/. If that is the case, edit the variables in gwinwrap.py accordingly.
-</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
+                <property name="stock">gtk-dialog-warning</property>
+                <property name="icon_size">6</property>
               </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkLabel" id="label9">
@@ -1212,11 +1200,22 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               </packing>
             </child>
             <child>
-              <widget class="GtkImage" id="image6">
+              <widget class="GtkLabel" id="label10">
                 <property name="visible">True</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon_size">6</property>
+                <property name="xpad">10</property>
+                <property name="label" translatable="yes">If you haven't already, please install some xscreensaver and/or gnome-screensaver packages and restart Gwinwrap to continue.
+
+Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreensaver/. If that is the case, edit the variables in gwinwrap.py accordingly.
+</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -1265,21 +1264,12 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkLabel" id="label8">
+              <widget class="GtkImage" id="image5">
                 <property name="visible">True</property>
-                <property name="xpad">10</property>
-                <property name="label" translatable="yes">How could you expect to run it!? Please install xwinwrap to continue.
-
-&lt;b&gt;Note:&lt;/b&gt; Xwinwrap is not included in the Hardy Heron repositories. Ubuntu users may try searching GetDeb.net for a package.</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
+                <property name="yalign">0.25</property>
+                <property name="stock">gtk-dialog-warning</property>
+                <property name="icon_size">6</property>
               </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkLabel" id="label7">
@@ -1297,12 +1287,21 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
               </packing>
             </child>
             <child>
-              <widget class="GtkImage" id="image5">
+              <widget class="GtkLabel" id="label8">
                 <property name="visible">True</property>
-                <property name="yalign">0.25</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon_size">6</property>
+                <property name="xpad">10</property>
+                <property name="label" translatable="yes">How could you expect to run it!? Please install xwinwrap to continue.
+
+&lt;b&gt;Note:&lt;/b&gt; Xwinwrap is not included in the Hardy Heron repositories. Ubuntu users may try searching GetDeb.net for a package.</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -1350,6 +1349,14 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
             <property name="visible">True</property>
             <property name="n_columns">2</property>
             <child>
+              <widget class="GtkImage" id="image7">
+                <property name="visible">True</property>
+                <property name="yalign">0.25</property>
+                <property name="stock">gtk-dialog-warning</property>
+                <property name="icon_size">6</property>
+              </widget>
+            </child>
+            <child>
               <widget class="GtkLabel" id="label15">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
@@ -1363,14 +1370,6 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
               </packing>
-            </child>
-            <child>
-              <widget class="GtkImage" id="image7">
-                <property name="visible">True</property>
-                <property name="yalign">0.25</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon_size">6</property>
-              </widget>
             </child>
           </widget>
           <packing>
@@ -1540,80 +1539,31 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
                       <placeholder/>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="overrideredirect">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Override Redirect</property>
-                        <property name="response_id">0</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="noinput">
+                      <widget class="GtkCheckButton" id="below">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">No Input</property>
-                        <property name="response_id">0</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="fullscreen">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Full Screen</property>
+                        <property name="label" translatable="yes">Below</property>
                         <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="sticky">
+                      <widget class="GtkCheckButton" id="above">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Sticky</property>
+                        <property name="label" translatable="yes">Above</property>
                         <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="nofocus">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">No Focus</property>
-                        <property name="response_id">0</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="skiptaskbar">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Skip Taskbar</property>
-                        <property name="response_id">0</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
                       </packing>
                     </child>
                     <child>
@@ -1632,31 +1582,80 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="above">
+                      <widget class="GtkCheckButton" id="skiptaskbar">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Above</property>
+                        <property name="label" translatable="yes">Skip Taskbar</property>
                         <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="below">
+                      <widget class="GtkCheckButton" id="nofocus">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Below</property>
+                        <property name="label" translatable="yes">No Focus</property>
                         <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="sticky">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Sticky</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="fullscreen">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Full Screen</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="noinput">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">No Input</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="overrideredirect">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Override Redirect</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
                       </packing>
                     </child>
                   </widget>
@@ -1684,26 +1683,6 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox7">
-            <property name="spacing">5</property>
-            <child>
-              <widget class="GtkLabel" id="label18">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">XScreensaver Directory:</property>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-              </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </widget>
-          <packing>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
           <widget class="GtkHButtonBox" id="hbuttonbox4">
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
@@ -1721,7 +1700,7 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="position">4</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </widget>

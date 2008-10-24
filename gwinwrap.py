@@ -22,7 +22,7 @@
 # TODO:Add filter combobox for movies/savers/all?
 
 
-import sys, subprocess, os, string
+import sys, subprocess, os, string, re, signal, pickle
 try:
  	import pygtk
   	pygtk.require("2.6")
@@ -35,11 +35,7 @@ except:
 	sys.exit(1)
 
 from optparse import OptionParser
-import pickle
 
-import pygst
-pygst.require("0.10")
-import gst, re, signal, os
 
 class gwinwrap:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
@@ -195,7 +191,8 @@ class gwinwrap:
 		self.Sound = self.gladeXML.get_widget("Sound")
 		self.StartupCombo = self.gladeXML.get_widget("StartupCombo")
 		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
-
+		self.TipBox = self.gladeXML.get_widget("TipBox")
+		self.TipTitle = self.gladeXML.get_widget("TipTitle")
 
 		# Enable RGBA colormap
 		# > This is so that we have transparent windows. We need to check so we don't
@@ -206,7 +203,6 @@ class gwinwrap:
 		if self.colormap == None:
 			self.colormap = self.rgbcolormap
 		gtk.widget_set_default_colormap(self.colormap)
-
 
 		print " * Loading global preferences..."
 		self.PrefButtonID = {self.noinput:"-ni",self.nofocus:"-nf",self.sticky:"-s",
@@ -262,7 +258,7 @@ class gwinwrap:
 		self.ShantzCheck()
 
 		print " * Showing Main window..."
-		self.Main.show()
+		self.Main.show()	
 
 	def UpdateStartup(self):
 		if self.startupeffect:
