@@ -315,11 +315,6 @@ class gwinwrap:
 			self.EffectSaveableCheck(None)
 			self.SaverListSelect(None)
 
-	def ShowEditing(self):
-                self.CustomFrame.hide()
-                self.EditFrame.show()
-
-
 	def PaneChange(self,widget):
 		if widget == self.CancelEdit or widget == self.New:
 			self.CleanUpPreview()
@@ -350,7 +345,8 @@ class gwinwrap:
 			self.Save(overwrite=False)
 
 		if widget == self.New or widget == self.Edit:
-			self.ShowEditing()
+			self.CustomFrame.hide()
+            		self.EditFrame.show()
 
 	def Save(self,overwrite=True):
 		if not self.SpeedCheckBox.get_active():
