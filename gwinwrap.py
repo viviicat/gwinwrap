@@ -181,8 +181,6 @@ class gwinwrap:
 		self.Sound = self.gladeXML.get_widget("Sound")
 		self.StartupCombo = self.gladeXML.get_widget("StartupCombo")
 		self.StartupCheckBox = self.gladeXML.get_widget("StartupCheckBox")
-		self.TipBox = self.gladeXML.get_widget("TipBox")
-		self.TipTitle = self.gladeXML.get_widget("TipTitle")
 
 		# Check for Xwinwrap
 		print " * Checking for Xwinwrap and MPlayer..."
