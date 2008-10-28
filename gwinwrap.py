@@ -37,7 +37,7 @@ except:
 from optparse import OptionParser
 
 
-class gwinwrap:
+class Main:
 	"""This is a GUI to xwinwrap...gwinrwap!"""
 
 	def __init__(self):
@@ -1055,5 +1055,5 @@ class startOptions:
 
 		
 if __name__ == "__main__":
-	run = gwinwrap()
+	run = Main()
 	gtk.main()
