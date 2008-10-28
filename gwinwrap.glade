@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Oct 28 01:21:28 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Oct 28 01:33:26 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="Main">
     <property name="width_request">800</property>
@@ -1412,9 +1412,13 @@ Alternatively, your xscreensavers may be located elsewhere than /usr/lib/xscreen
   <widget class="GtkDialog" id="RemoveConfirm">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Remove Effect</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="icon_name">gtk-dialog-warning</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
     <property name="has_separator">False</property>
     <signal name="response" handler="on_RemoveConfirm_response"/>
     <child internal-child="vbox">
